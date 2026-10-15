@@ -4,6 +4,15 @@
  WindowStyle="None" ResizeMode="CanResizeWithGrip" WindowStartupLocation="CenterScreen"
  Background="#090E14" Foreground="#F6EBD3" FontFamily="Segoe UI" UseLayoutRounding="True">
  <Window.Resources>
+  <Storyboard x:Key="AmbientMotion">
+   <DoubleAnimation Storyboard.TargetName="MistNear" Storyboard.TargetProperty="(UIElement.RenderTransform).(TranslateTransform.X)" From="-35" To="95" Duration="0:0:38" AutoReverse="True" RepeatBehavior="Forever"/>
+   <DoubleAnimation Storyboard.TargetName="MistNear" Storyboard.TargetProperty="Opacity" From="0.16" To="0.27" Duration="0:0:21" AutoReverse="True" RepeatBehavior="Forever"/>
+   <DoubleAnimation Storyboard.TargetName="MistFar" Storyboard.TargetProperty="(UIElement.RenderTransform).(TranslateTransform.X)" From="65" To="-85" Duration="0:0:47" AutoReverse="True" RepeatBehavior="Forever"/>
+   <DoubleAnimation Storyboard.TargetName="GoldenBloom" Storyboard.TargetProperty="Opacity" From="0.07" To="0.16" Duration="0:0:12" AutoReverse="True" RepeatBehavior="Forever"/>
+   <DoubleAnimation Storyboard.TargetName="GoldenMotes" Storyboard.TargetProperty="(UIElement.RenderTransform).(TranslateTransform.Y)" From="5" To="-14" Duration="0:0:19" AutoReverse="True" RepeatBehavior="Forever"/>
+   <DoubleAnimation Storyboard.TargetName="GoldenMotes" Storyboard.TargetProperty="Opacity" From="0.20" To="0.55" Duration="0:0:8" AutoReverse="True" RepeatBehavior="Forever"/>
+  </Storyboard>
+
   <LinearGradientBrush x:Key="Gold" StartPoint="0,0" EndPoint="0,1"><GradientStop Color="#F2D9A1"/><GradientStop Color="#C09A53" Offset="1"/></LinearGradientBrush>
   <Style TargetType="Button">
    <Setter Property="Cursor" Value="Hand"/><Setter Property="FontSize" Value="14"/><Setter Property="FontWeight" Value="SemiBold"/>
@@ -46,10 +55,27 @@
   <Grid>
    <Grid.RowDefinitions><RowDefinition Height="38"/><RowDefinition Height="*"/></Grid.RowDefinitions>
    <Grid.Background><LinearGradientBrush StartPoint="0,0" EndPoint="1,1"><GradientStop Color="#17242B"/><GradientStop Color="#0D141B" Offset="0.5"/><GradientStop Color="#211C1B" Offset="1"/></LinearGradientBrush></Grid.Background>
-   <Grid IsHitTestVisible="False" ClipToBounds="True">
-    <Ellipse Width="820" Height="500" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="-230,-240,0,0" Opacity="0.24"><Ellipse.Fill><RadialGradientBrush><GradientStop Color="#719790"/><GradientStop Color="#00101B21" Offset="1"/></RadialGradientBrush></Ellipse.Fill></Ellipse>
-    <Ellipse Width="900" Height="600" HorizontalAlignment="Right" VerticalAlignment="Bottom" Margin="0,0,-400,-350" Opacity="0.25"><Ellipse.Fill><RadialGradientBrush><GradientStop Color="#B48544"/><GradientStop Color="#00101B21" Offset="1"/></RadialGradientBrush></Ellipse.Fill></Ellipse>
-    <Path Data="M 18,75 L 18,18 75,18 M 1138,18 L 1197,18 1197,75" Stroke="#635437" StrokeThickness="1" Opacity="0.5"/>
+   <Grid Grid.RowSpan="2" IsHitTestVisible="False" ClipToBounds="True">
+    <Image x:Name="Landscape" Stretch="UniformToFill" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Opacity="0.88" RenderOptions.BitmapScalingMode="HighQuality"/>
+    <Rectangle><Rectangle.Fill><LinearGradientBrush StartPoint="0,0" EndPoint="0,1"><GradientStop Color="#40080F17"/><GradientStop Color="#65080F17" Offset="0.28"/><GradientStop Color="#BD080F17" Offset="0.67"/><GradientStop Color="#DA080F17" Offset="1"/></LinearGradientBrush></Rectangle.Fill></Rectangle>
+    <Rectangle><Rectangle.Fill><LinearGradientBrush StartPoint="0,0" EndPoint="1,0"><GradientStop Color="#85080F17"/><GradientStop Color="#17080F17" Offset="0.62"/><GradientStop Color="#50080F17" Offset="1"/></LinearGradientBrush></Rectangle.Fill></Rectangle>
+    <Viewbox Stretch="Fill">
+     <Canvas Width="1220" Height="830" ClipToBounds="True">
+      <Ellipse x:Name="GoldenBloom" Width="580" Height="380" Canvas.Left="850" Canvas.Top="-80" Opacity="0.10"><Ellipse.Fill><RadialGradientBrush><GradientStop Color="#E8E6BD70"/><GradientStop Color="#00DCAD5A" Offset="1"/></RadialGradientBrush></Ellipse.Fill></Ellipse>
+      <Path Data="M 1125,-30 L 550,430 940,360 Z M 1195,-30 L 1010,440 1190,400 Z" Opacity="0.035"><Path.Fill><LinearGradientBrush StartPoint="1,0" EndPoint="0,1"><GradientStop Color="#FFE8B0"/><GradientStop Color="#00FFE8B0" Offset="1"/></LinearGradientBrush></Path.Fill></Path>
+      <Ellipse x:Name="MistNear" Width="1050" Height="155" Canvas.Left="-220" Canvas.Top="155" Opacity="0.20"><Ellipse.RenderTransform><TranslateTransform/></Ellipse.RenderTransform><Ellipse.Fill><RadialGradientBrush><GradientStop Color="#ADA9C3C5"/><GradientStop Color="#009DBDC3" Offset="1"/></RadialGradientBrush></Ellipse.Fill></Ellipse>
+      <Ellipse x:Name="MistFar" Width="1200" Height="180" Canvas.Left="340" Canvas.Top="675" Opacity="0.13"><Ellipse.RenderTransform><TranslateTransform/></Ellipse.RenderTransform><Ellipse.Fill><RadialGradientBrush><GradientStop Color="#B6A5C1C1"/><GradientStop Color="#0092AEB8" Offset="1"/></RadialGradientBrush></Ellipse.Fill></Ellipse>
+      <Canvas x:Name="GoldenMotes" Opacity="0.35"><Canvas.RenderTransform><TranslateTransform/></Canvas.RenderTransform>
+       <Ellipse Width="2" Height="2" Fill="#EBC57B" Canvas.Left="780" Canvas.Top="52"/>
+       <Ellipse Width="3" Height="3" Fill="#EBC57B" Canvas.Left="1060" Canvas.Top="115"/>
+       <Ellipse Width="2" Height="2" Fill="#EBC57B" Canvas.Left="990" Canvas.Top="207"/>
+       <Ellipse Width="2" Height="2" Fill="#EBC57B" Canvas.Left="1180" Canvas.Top="405"/>
+       <Ellipse Width="2" Height="2" Fill="#EBC57B" Canvas.Left="31" Canvas.Top="450"/>
+       <Ellipse Width="3" Height="3" Fill="#EBC57B" Canvas.Left="860" Canvas.Top="788"/>
+       <Ellipse Width="2" Height="2" Fill="#EBC57B" Canvas.Left="420" Canvas.Top="790"/>
+      </Canvas>
+     </Canvas>
+    </Viewbox>
    </Grid>
    <Border x:Name="TitleBar" Background="#25000000">
     <Grid><TextBlock Text="A L B I O N   R E B O R N" FontSize="9" Foreground="#9D998D" VerticalAlignment="Center" Margin="22,0,0,0"/>

@@ -35,6 +35,37 @@ Add-Type -AssemblyName PresentationFramework,PresentationCore,WindowsBase
 if ([Threading.Thread]::CurrentThread.ApartmentState -ne 'STA') { throw 'Launch with Windows PowerShell -STA.' }
 [xml]$xaml=Get-Content -LiteralPath (Join-Path $PSScriptRoot 'Launcher.xaml') -Raw -Encoding UTF8
 $window=[Windows.Markup.XamlReader]::Load([Xml.XmlNodeReader]::new($xaml))
+$landscapePath=Join-Path $PSScriptRoot 'assets\albion-landscape.png'
+if (Test-Path -LiteralPath $landscapePath) {
+    $landscape=[Windows.Media.Imaging.BitmapImage]::new()
+    $landscape.BeginInit()
+    $landscape.CacheOption=[Windows.Media.Imaging.BitmapCacheOption]::OnLoad
+    $landscape.UriSource=[uri]$landscapePath
+    $landscape.EndInit()
+    $landscape.Freeze()
+    $window.FindName('Landscape').Source=$landscape
+}
+$ambient=$window.Resources['AmbientMotion']
+$ambientStarted=$false
+# Gentle compositor animation, paused whenever a game or another app is in front.
+# Honor Windows' animation preference and keep the scene static in that case.
+if ([Windows.SystemParameters]::ClientAreaAnimation) {
+    [Windows.Media.Animation.Timeline]::SetDesiredFrameRate($ambient,20)
+    $window.Add_Loaded({
+        $ambient.Begin($window,$true)
+        $script:ambientStarted=$true
+        if (!$window.IsActive) { $ambient.Pause($window) }
+    })
+    $window.Add_Deactivated({ if ($script:ambientStarted) { $ambient.Pause($window) } })
+    $window.Add_Activated({ if ($script:ambientStarted) { $ambient.Resume($window) } })
+    $window.Add_StateChanged({
+        if ($script:ambientStarted) {
+            if ($window.WindowState -eq 'Minimized') { $ambient.Pause($window) }
+            elseif ($window.IsActive) { $ambient.Resume($window) }
+        }
+    })
+    $window.Add_Closed({ $ambient.Remove($window) })
+}
 $window.FindName('Close').Add_Click({ $window.Close() })
 $window.FindName('Minimize').Add_Click({ $window.WindowState='Minimized' })
 $window.FindName('Maximize').Add_Click({
