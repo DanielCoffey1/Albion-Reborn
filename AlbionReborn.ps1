@@ -35,6 +35,31 @@ Add-Type -AssemblyName PresentationFramework,PresentationCore,WindowsBase
 if ([Threading.Thread]::CurrentThread.ApartmentState -ne 'STA') { throw 'Launch with Windows PowerShell -STA.' }
 [xml]$xaml=Get-Content -LiteralPath (Join-Path $PSScriptRoot 'Launcher.xaml') -Raw -Encoding UTF8
 $window=[Windows.Markup.XamlReader]::Load([Xml.XmlNodeReader]::new($xaml))
+$window.FindName('Close').Add_Click({ $window.Close() })
+$window.FindName('Minimize').Add_Click({ $window.WindowState='Minimized' })
+$window.FindName('Maximize').Add_Click({
+    $window.WindowState=if ($window.WindowState -eq 'Maximized') { 'Normal' } else { 'Maximized' }
+})
+$window.FindName('TitleBar').Add_MouseLeftButtonDown({
+    param($sender,$eventArgs)
+    if ($eventArgs.ClickCount -eq 2) {
+        $window.WindowState=if ($window.WindowState -eq 'Maximized') { 'Normal' } else { 'Maximized' }
+    } else { $window.DragMove() }
+})
+foreach ($game in Get-AlbionCatalog) {
+    $cover=Join-Path $PSScriptRoot ('assets\covers\'+$game.Id+'.jpg')
+    if (Test-Path -LiteralPath $cover) {
+        try {
+            $bitmap=[Windows.Media.Imaging.BitmapImage]::new()
+            $bitmap.BeginInit()
+            $bitmap.CacheOption=[Windows.Media.Imaging.BitmapCacheOption]::OnLoad
+            $bitmap.UriSource=[uri]$cover
+            $bitmap.EndInit()
+            $bitmap.Freeze()
+            $window.FindName($game.Id+'Art').Fill.ImageSource=$bitmap
+        } catch { } # Artwork is optional; game launch remains available offline.
+    }
+}
 $cards=@{}
 $status=$window.FindName('Status')
 $launchingUntil=[datetime]::MinValue
@@ -43,6 +68,7 @@ $lastRunningName=''
 
 function Update-AlbionView {
     $runningName=''
+    $readyCount=0
     foreach ($game in Get-AlbionCatalog) {
         $card=$cards[$game.Id]
         $plan=$null; $message='Add an installation'; $ready=$false
@@ -50,6 +76,7 @@ function Update-AlbionView {
             try {
                 $plan=Get-AlbionLaunchPlan $game.Id $settings[$game.Id]
                 $ready=$true; $message='Ready to play'
+                $readyCount++
                 if (@(Get-AlbionGameProcess $plan).Count) { $message='Running'; $runningName=$game.Name }
             } catch { $message='Location needs attention' }
         }
@@ -62,6 +89,7 @@ function Update-AlbionView {
     if ($runningName) { $status.Text="$runningName is running. Your saves and settings stay with the game." }
     elseif ($script:lastRunningName) { $status.Text='Choose your next story.' }
     $script:lastRunningName=$runningName
+    $window.FindName('CollectionCount').Text="$readyCount of 3 ready"
 }
 
 foreach ($game in Get-AlbionCatalog) {

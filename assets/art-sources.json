@@ -1,0 +1,22 @@
+{
+  "images": [
+    {
+      "source": "https://www.xbox.com/en-US/games/store/_/C2Q32JM0BPZL",
+      "file": "fable1.jpg",
+      "id": "fable1",
+      "url": "https://store-images.s-microsoft.com/image/apps.1230.66175927222580475.7f09fde8-a46b-4c45-8584-a5e3090f8190.710043e4-29a9-4a9e-b032-03c4d8b85b47?w=720&h=1080&q=90"
+    },
+    {
+      "source": "https://www.xbox.com/en-US/games/store/Fable-II/C2WKJJ9F5936",
+      "file": "fable2.jpg",
+      "id": "fable2",
+      "url": "https://store-images.s-microsoft.com/image/apps.4730.66274487452813675.86971dec-0f03-42bb-b657-322859f064f4.130a3c09-259d-4961-8a49-70176caf3c2b?w=720&h=1080&q=90"
+    },
+    {
+      "source": "https://www.xbox.com/en-us/games/store/Fable-III/BR46KM4D5B9L",
+      "file": "fable3.jpg",
+      "id": "fable3",
+      "url": "https://store-images.s-microsoft.com/image/apps.53940.68952782261614407.207517f2-cff8-4d40-84e1-b44139d6e70b.daab750c-4d12-472d-8b34-49dea1349935?w=720&h=1080&q=90"
+    }
+  ]
+}

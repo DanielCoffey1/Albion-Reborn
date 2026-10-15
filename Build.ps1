@@ -1,5 +1,9 @@
-param([switch]$DesktopShortcut)
+param([switch]$DesktopShortcut, [switch]$SkipArtwork)
 $ErrorActionPreference='Stop'
+if (!$SkipArtwork) {
+    try { & (Join-Path $PSScriptRoot 'Fetch-Art.ps1') }
+    catch { Write-Warning "Artwork is unavailable; the launcher still works. $($_.Exception.Message)" }
+}
 $compiler=Join-Path $env:SystemRoot 'Microsoft.NET\Framework64\v4.0.30319\csc.exe'
 if (!(Test-Path -LiteralPath $compiler)) { throw 'The Windows .NET Framework C# compiler is required.' }
 $automation=Get-ChildItem (Join-Path $env:SystemRoot 'Microsoft.NET\assembly\GAC_MSIL\System.Management.Automation') -Recurse -Filter System.Management.Automation.dll | Select-Object -First 1

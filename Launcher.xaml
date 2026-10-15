@@ -1,115 +1,176 @@
 <Window xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
-        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-        Title="Albion Reborn" Width="1060" Height="680" MinWidth="940" MinHeight="640"
-        WindowStartupLocation="CenterScreen" Background="#101C1B" Foreground="#F1EBDB"
-        FontFamily="Segoe UI" UseLayoutRounding="True">
-  <Window.Resources>
-    <Style TargetType="Button">
-      <Setter Property="Cursor" Value="Hand"/>
-      <Setter Property="FontSize" Value="15"/>
-      <Setter Property="FontWeight" Value="SemiBold"/>
-      <Setter Property="Background" Value="#D1B57A"/>
-      <Setter Property="Foreground" Value="#152321"/>
-      <Setter Property="Padding" Value="18,12"/>
-      <Setter Property="BorderThickness" Value="0"/>
-      <Setter Property="Template">
-        <Setter.Value>
-          <ControlTemplate TargetType="Button">
-            <Border x:Name="ButtonBorder" Background="{TemplateBinding Background}" CornerRadius="4" Padding="{TemplateBinding Padding}">
-              <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center"/>
-            </Border>
-            <ControlTemplate.Triggers>
-              <Trigger Property="IsMouseOver" Value="True"><Setter TargetName="ButtonBorder" Property="Opacity" Value="0.82"/></Trigger>
-              <Trigger Property="IsKeyboardFocused" Value="True"><Setter TargetName="ButtonBorder" Property="BorderBrush" Value="#FFFFFF"/><Setter TargetName="ButtonBorder" Property="BorderThickness" Value="2"/></Trigger>
-              <Trigger Property="IsEnabled" Value="False"><Setter TargetName="ButtonBorder" Property="Opacity" Value="0.38"/></Trigger>
-            </ControlTemplate.Triggers>
-          </ControlTemplate>
-        </Setter.Value>
-      </Setter>
-    </Style>
-    <Style x:Key="Locate" TargetType="Button" BasedOn="{StaticResource {x:Type Button}}">
-      <Setter Property="Background" Value="Transparent"/>
-      <Setter Property="Foreground" Value="#C3CBBE"/>
-      <Setter Property="FontSize" Value="12"/>
-      <Setter Property="FontWeight" Value="Normal"/>
-      <Setter Property="Padding" Value="10,12"/>
-    </Style>
-    <Style x:Key="Card" TargetType="Border">
-      <Setter Property="Background" Value="#1B2B28"/>
-      <Setter Property="BorderBrush" Value="#374740"/>
-      <Setter Property="BorderThickness" Value="1"/>
-      <Setter Property="CornerRadius" Value="8"/>
-      <Setter Property="Padding" Value="26"/>
-    </Style>
-    <Style x:Key="Body" TargetType="TextBlock">
-      <Setter Property="Foreground" Value="#B9C5BB"/>
-      <Setter Property="FontSize" Value="13"/>
-      <Setter Property="TextWrapping" Value="Wrap"/>
-      <Setter Property="LineHeight" Value="21"/>
-    </Style>
-  </Window.Resources>
-  <Grid Margin="38,28,38,22">
-    <Grid.RowDefinitions><RowDefinition Height="Auto"/><RowDefinition Height="*"/><RowDefinition Height="Auto"/></Grid.RowDefinitions>
-    <StackPanel Margin="0,0,0,26">
-      <TextBlock Text="THE FABLE COLLECTION" FontSize="11" Foreground="#D1B57A" Margin="1,0,0,10"/>
-      <TextBlock Text="Albion Reborn" FontFamily="Georgia" FontSize="44"/>
-      <TextBlock Text="Three chapters. A world of choices. Choose your next story." Foreground="#AEBEB3" FontSize="14" Margin="2,12,0,0"/>
-    </StackPanel>
-    <Grid Grid.Row="1">
-      <Grid.ColumnDefinitions><ColumnDefinition/><ColumnDefinition Width="18"/><ColumnDefinition/><ColumnDefinition Width="18"/><ColumnDefinition/></Grid.ColumnDefinitions>
-      <Border Style="{StaticResource Card}" Background="#182521">
-        <Grid>
-          <Grid.RowDefinitions><RowDefinition Height="*"/><RowDefinition Height="Auto"/></Grid.RowDefinitions>
-          <StackPanel>
-            <TextBlock Text="I" FontFamily="Georgia" FontSize="68" Foreground="#61715B" Margin="0,0,0,14"/>
-            <TextBlock Text="Fable I" FontFamily="Georgia" FontSize="27" Margin="0,0,0,12"/>
-            <TextBlock Text="Every hero has a beginning." FontSize="13" Foreground="#D4C59F" TextWrapping="Wrap" Margin="0,0,0,14"/>
-            <TextBlock Style="{StaticResource Body}" Text="A place reserved for the first chapter. Add your installation whenever it is ready."/>
-          </StackPanel>
-          <StackPanel Grid.Row="1" Margin="0,20,0,0">
-            <TextBlock x:Name="fable1Badge" FontSize="11" Foreground="#9DAE9C" Margin="0,0,0,12"/>
-            <Button x:Name="fable1Play" Content="Not installed"/>
-            <Button x:Name="fable1Locate" Style="{StaticResource Locate}" Content="Locate game"/>
-          </StackPanel>
-        </Grid>
-      </Border>
-      <Border Grid.Column="2" Style="{StaticResource Card}">
-        <Grid>
-          <Grid.RowDefinitions><RowDefinition Height="*"/><RowDefinition Height="Auto"/></Grid.RowDefinitions>
-          <StackPanel>
-            <TextBlock Text="II" FontFamily="Georgia" FontSize="68" Foreground="#8DAA8B" Margin="0,0,0,14"/>
-            <TextBlock Text="Fable II" FontFamily="Georgia" FontSize="27" Margin="0,0,0,12"/>
-            <TextBlock Text="Your choices shape a kingdom." FontSize="13" Foreground="#D4C59F" TextWrapping="Wrap" Margin="0,0,0,14"/>
-            <TextBlock Style="{StaticResource Body}" Text="Return to Albion and continue your story with your existing game settings."/>
-          </StackPanel>
-          <StackPanel Grid.Row="1" Margin="0,20,0,0">
-            <TextBlock x:Name="fable2Badge" FontSize="11" Foreground="#A8C6A4" Margin="0,0,0,12"/>
-            <Button x:Name="fable2Play" Content="Play"/>
-            <Button x:Name="fable2Locate" Style="{StaticResource Locate}" Content="Change location"/>
-          </StackPanel>
-        </Grid>
-      </Border>
-      <Border Grid.Column="4" Style="{StaticResource Card}" Background="#242B2C">
-        <Grid>
-          <Grid.RowDefinitions><RowDefinition Height="*"/><RowDefinition Height="Auto"/></Grid.RowDefinitions>
-          <StackPanel>
-            <TextBlock Text="III" FontFamily="Georgia" FontSize="68" Foreground="#A2ACBB" Margin="0,0,0,14"/>
-            <TextBlock Text="Fable III" FontFamily="Georgia" FontSize="27" Margin="0,0,0,12"/>
-            <TextBlock Text="The crown is only the beginning." FontSize="13" Foreground="#D4C59F" TextWrapping="Wrap" Margin="0,0,0,14"/>
-            <TextBlock Style="{StaticResource Body}" Text="Lead a revolution with your current lighting and scenery fixes."/>
-          </StackPanel>
-          <StackPanel Grid.Row="1" Margin="0,20,0,0">
-            <TextBlock x:Name="fable3Badge" FontSize="11" Foreground="#A8C6A4" Margin="0,0,0,12"/>
-            <Button x:Name="fable3Play" Content="Play"/>
-            <Button x:Name="fable3Locate" Style="{StaticResource Locate}" Content="Change location"/>
-          </StackPanel>
-        </Grid>
-      </Border>
+ xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+ Title="Albion Reborn" Width="1220" Height="830" MinWidth="1060" MinHeight="740"
+ WindowStyle="None" ResizeMode="CanResizeWithGrip" WindowStartupLocation="CenterScreen"
+ Background="#090E14" Foreground="#F6EBD3" FontFamily="Segoe UI" UseLayoutRounding="True">
+ <Window.Resources>
+  <LinearGradientBrush x:Key="Gold" StartPoint="0,0" EndPoint="0,1"><GradientStop Color="#F2D9A1"/><GradientStop Color="#C09A53" Offset="1"/></LinearGradientBrush>
+  <Style TargetType="Button">
+   <Setter Property="Cursor" Value="Hand"/><Setter Property="FontSize" Value="14"/><Setter Property="FontWeight" Value="SemiBold"/>
+   <Setter Property="Foreground" Value="#181B1C"/><Setter Property="Background" Value="{StaticResource Gold}"/>
+   <Setter Property="Padding" Value="18,13"/><Setter Property="BorderThickness" Value="1"/><Setter Property="BorderBrush" Value="#E4CA8F"/>
+   <Setter Property="Template"><Setter.Value><ControlTemplate TargetType="Button">
+    <Border x:Name="Surface" Background="{TemplateBinding Background}" BorderBrush="{TemplateBinding BorderBrush}" BorderThickness="{TemplateBinding BorderThickness}" CornerRadius="3" Padding="{TemplateBinding Padding}">
+     <ContentPresenter VerticalAlignment="Center" HorizontalAlignment="Center"/>
+    </Border>
+    <ControlTemplate.Triggers>
+     <Trigger Property="IsMouseOver" Value="True"><Setter TargetName="Surface" Property="Opacity" Value="0.88"/></Trigger>
+     <Trigger Property="IsPressed" Value="True"><Setter TargetName="Surface" Property="Opacity" Value="0.65"/></Trigger>
+     <Trigger Property="IsKeyboardFocused" Value="True"><Setter TargetName="Surface" Property="BorderBrush" Value="#FFFFFF"/><Setter TargetName="Surface" Property="BorderThickness" Value="2"/></Trigger>
+     <Trigger Property="IsEnabled" Value="False"><Setter TargetName="Surface" Property="Opacity" Value="0.35"/></Trigger>
+    </ControlTemplate.Triggers>
+   </ControlTemplate></Setter.Value></Setter>
+  </Style>
+  <Style x:Key="Quiet" TargetType="Button" BasedOn="{StaticResource {x:Type Button}}">
+   <Setter Property="Background" Value="Transparent"/><Setter Property="BorderThickness" Value="0"/><Setter Property="Foreground" Value="#B2B8BB"/><Setter Property="FontSize" Value="11"/><Setter Property="FontWeight" Value="Normal"/><Setter Property="Padding" Value="10,11"/>
+  </Style>
+  <Style x:Key="Chrome" TargetType="Button" BasedOn="{StaticResource Quiet}"><Setter Property="Width" Value="45"/><Setter Property="FontSize" Value="16"/><Setter Property="Padding" Value="0"/></Style>
+  <Style x:Key="Card" TargetType="Border">
+   <Setter Property="Background" Value="#151C22"/><Setter Property="BorderBrush" Value="#75623E"/><Setter Property="BorderThickness" Value="1"/><Setter Property="CornerRadius" Value="7"/>
+   <Setter Property="RenderTransformOrigin" Value="0.5,0.5"/><Setter Property="RenderTransform"><Setter.Value><ScaleTransform ScaleX="1" ScaleY="1"/></Setter.Value></Setter>
+   <Setter Property="Effect"><Setter.Value><DropShadowEffect BlurRadius="24" ShadowDepth="8" Opacity="0.55" Color="#000000"/></Setter.Value></Setter>
+   <Style.Triggers><Trigger Property="IsMouseOver" Value="True">
+    <Setter Property="BorderBrush" Value="#E5C789"/>
+    <Trigger.EnterActions><BeginStoryboard><Storyboard>
+     <DoubleAnimation Storyboard.TargetProperty="(UIElement.RenderTransform).(ScaleTransform.ScaleX)" To="1.012" Duration="0:0:0.18"/>
+     <DoubleAnimation Storyboard.TargetProperty="(UIElement.RenderTransform).(ScaleTransform.ScaleY)" To="1.012" Duration="0:0:0.18"/>
+    </Storyboard></BeginStoryboard></Trigger.EnterActions>
+    <Trigger.ExitActions><BeginStoryboard><Storyboard>
+     <DoubleAnimation Storyboard.TargetProperty="(UIElement.RenderTransform).(ScaleTransform.ScaleX)" To="1" Duration="0:0:0.22"/>
+     <DoubleAnimation Storyboard.TargetProperty="(UIElement.RenderTransform).(ScaleTransform.ScaleY)" To="1" Duration="0:0:0.22"/>
+    </Storyboard></BeginStoryboard></Trigger.ExitActions>
+   </Trigger></Style.Triggers>
+  </Style>
+ </Window.Resources>
+ <Border BorderBrush="#695735" BorderThickness="1">
+  <Grid>
+   <Grid.RowDefinitions><RowDefinition Height="38"/><RowDefinition Height="*"/></Grid.RowDefinitions>
+   <Grid.Background><LinearGradientBrush StartPoint="0,0" EndPoint="1,1"><GradientStop Color="#17242B"/><GradientStop Color="#0D141B" Offset="0.5"/><GradientStop Color="#211C1B" Offset="1"/></LinearGradientBrush></Grid.Background>
+   <Grid IsHitTestVisible="False" ClipToBounds="True">
+    <Ellipse Width="820" Height="500" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="-230,-240,0,0" Opacity="0.24"><Ellipse.Fill><RadialGradientBrush><GradientStop Color="#719790"/><GradientStop Color="#00101B21" Offset="1"/></RadialGradientBrush></Ellipse.Fill></Ellipse>
+    <Ellipse Width="900" Height="600" HorizontalAlignment="Right" VerticalAlignment="Bottom" Margin="0,0,-400,-350" Opacity="0.25"><Ellipse.Fill><RadialGradientBrush><GradientStop Color="#B48544"/><GradientStop Color="#00101B21" Offset="1"/></RadialGradientBrush></Ellipse.Fill></Ellipse>
+    <Path Data="M 18,75 L 18,18 75,18 M 1138,18 L 1197,18 1197,75" Stroke="#635437" StrokeThickness="1" Opacity="0.5"/>
+   </Grid>
+   <Border x:Name="TitleBar" Background="#25000000">
+    <Grid><TextBlock Text="A L B I O N   R E B O R N" FontSize="9" Foreground="#9D998D" VerticalAlignment="Center" Margin="22,0,0,0"/>
+     <StackPanel Orientation="Horizontal" HorizontalAlignment="Right">
+      <Button x:Name="Minimize" Style="{StaticResource Chrome}" Content="&#x2014;" ToolTip="Minimize" AutomationProperties.Name="Minimize"/>
+      <Button x:Name="Maximize" Style="{StaticResource Chrome}" Content="&#x25A1;" ToolTip="Maximize or restore" AutomationProperties.Name="Maximize or restore"/>
+      <Button x:Name="Close" Style="{StaticResource Chrome}" Content="&#x00D7;" ToolTip="Close launcher" AutomationProperties.Name="Close launcher"/>
+     </StackPanel>
     </Grid>
-    <Grid Grid.Row="2" Margin="0,22,0,0">
-      <Grid.ColumnDefinitions><ColumnDefinition Width="*"/><ColumnDefinition Width="Auto"/></Grid.ColumnDefinitions>
-      <TextBlock x:Name="Status" Text="Choose your next story." Foreground="#B9C5BB" FontSize="12" TextWrapping="Wrap" VerticalAlignment="Center" Margin="0,0,20,0"/>
-      <TextBlock Grid.Column="1" Text="ALBION REBORN  /  0.1" Foreground="#7C9385" FontSize="10" VerticalAlignment="Center"/>
+   </Border>
+   <Grid Grid.Row="1" Margin="46,18,46,24">
+    <Grid.RowDefinitions><RowDefinition Height="150"/><RowDefinition Height="34"/><RowDefinition Height="*"/><RowDefinition Height="49"/></Grid.RowDefinitions>
+    <Grid>
+     <Grid.ColumnDefinitions><ColumnDefinition Width="110"/><ColumnDefinition Width="*"/><ColumnDefinition Width="Auto"/></Grid.ColumnDefinitions>
+     <Viewbox Width="86" Height="100" HorizontalAlignment="Left" VerticalAlignment="Center">
+      <Grid Width="100" Height="112">
+       <Path Data="M 50,3 L 91,26 91,78 50,107 9,78 9,26 Z" Stroke="#B99A5D" StrokeThickness="1.2" Fill="#172329"/>
+       <Path Data="M 50,10 L 85,30 85,74 50,99 15,74 15,30 Z" Stroke="#665C42" StrokeThickness="0.7"/>
+       <Path Data="M 29,72 L 50,29 71,72 M 37,59 L 63,59 M 50,21 L 50,16 M 50,85 L 50,79" Stroke="#E2C285" StrokeThickness="3"/>
+       <Ellipse Width="4" Height="4" Fill="#E2C285" HorizontalAlignment="Left" VerticalAlignment="Center" Margin="19,0,0,0"/>
+       <Ellipse Width="4" Height="4" Fill="#E2C285" HorizontalAlignment="Right" VerticalAlignment="Center" Margin="0,0,19,0"/>
+      </Grid>
+     </Viewbox>
+     <StackPanel Grid.Column="1" VerticalAlignment="Center">
+      <TextBlock Text="T H E   F A B L E   C O L L E C T I O N" FontSize="10" Foreground="#BCA473" Margin="2,0,0,10"/>
+      <TextBlock Text="Albion Reborn" FontFamily="Georgia" FontSize="49" Foreground="#F2E6CD"><TextBlock.Effect><DropShadowEffect BlurRadius="18" ShadowDepth="2" Opacity="0.35" Color="#000000"/></TextBlock.Effect></TextBlock>
+      <TextBlock Text="Every choice leaves a legend." FontFamily="Georgia" FontStyle="Italic" FontSize="16" Foreground="#ADB6B8" Margin="3,10,0,0"/>
+     </StackPanel>
+     <StackPanel Grid.Column="2" VerticalAlignment="Center" HorizontalAlignment="Right">
+      <TextBlock Text="Y O U R   L I B R A R Y" FontSize="9" Foreground="#9FAAAE" HorizontalAlignment="Right"/>
+      <TextBlock x:Name="CollectionCount" Text="THE TRILOGY" FontFamily="Georgia" FontSize="20" Foreground="#D5BB83" Margin="0,10,0,0" HorizontalAlignment="Right"/>
+     </StackPanel>
     </Grid>
+    <Grid Grid.Row="1" Margin="0,1,0,17" VerticalAlignment="Center">
+     <Rectangle Height="1"><Rectangle.Fill><LinearGradientBrush StartPoint="0,0" EndPoint="1,0"><GradientStop Color="#00675236"/><GradientStop Color="#A98A50" Offset="0.5"/><GradientStop Color="#00675236" Offset="1"/></LinearGradientBrush></Rectangle.Fill></Rectangle>
+     <Border Background="#111B21" Width="180" HorizontalAlignment="Center"><TextBlock Text="C H O O S E   Y O U R   S T O R Y" Foreground="#BBAC8C" FontSize="9" HorizontalAlignment="Center"/></Border>
+    </Grid>
+    <Grid Grid.Row="2" Margin="0,3,0,3">
+     <Grid.ColumnDefinitions><ColumnDefinition/><ColumnDefinition Width="24"/><ColumnDefinition/><ColumnDefinition Width="24"/><ColumnDefinition/></Grid.ColumnDefinitions>
+     <Border Grid.Column="0" Style="{StaticResource Card}">
+      <Grid>
+       <Rectangle x:Name="fable1Art" RadiusX="6" RadiusY="6" Margin="1">
+        <Rectangle.Fill><ImageBrush Stretch="UniformToFill" Viewbox="0,0.117,1,0.806" ViewboxUnits="RelativeToBoundingBox" AlignmentX="Center" AlignmentY="Top"/></Rectangle.Fill>
+       </Rectangle>
+       <Rectangle RadiusX="6" RadiusY="6" Margin="1" IsHitTestVisible="False">
+        <Rectangle.Fill><LinearGradientBrush StartPoint="0,0" EndPoint="0,1"><GradientStop Color="#30060B10"/><GradientStop Color="#00060B10" Offset="0.28"/><GradientStop Color="#40060B10" Offset="0.40"/><GradientStop Color="#F50B1118" Offset="0.56"/><GradientStop Color="#FF0B1118" Offset="1"/></LinearGradientBrush></Rectangle.Fill>
+       </Rectangle>
+       <Grid Margin="23,20,23,16">
+        <Grid.RowDefinitions><RowDefinition Height="Auto"/><RowDefinition Height="*"/><RowDefinition Height="Auto"/></Grid.RowDefinitions>
+        <Grid><Border Background="#B00B1218" CornerRadius="2" Padding="8,5" HorizontalAlignment="Left"><TextBlock Text="C H A P T E R   I" FontSize="9" Foreground="#F1E5CE" VerticalAlignment="Center"/></Border>
+         <Border Background="#D90B1218" BorderBrush="#6F766957" BorderThickness="1" CornerRadius="10" Padding="9,4" HorizontalAlignment="Right"><TextBlock x:Name="fable1Badge" FontSize="9" Foreground="#E5C58A"/></Border>
+        </Grid>
+        <StackPanel Grid.Row="2">
+         <TextBlock Text="THE MAKING OF A HERO" FontSize="9" Foreground="#D1AD6D" Margin="0,0,0,9"/>
+         <TextBlock Text="Fable I" FontFamily="Georgia" FontSize="35" Foreground="#FFF0D7"/>
+         <TextBlock Text="Where legends begin." FontFamily="Georgia" FontStyle="Italic" FontSize="13" Foreground="#BEC2BE" Margin="0,9,0,22" TextWrapping="Wrap"/>
+         <Button x:Name="fable1Play" Content="Play" AutomationProperties.Name="Play Fable I"/>
+         <Button x:Name="fable1Locate" Style="{StaticResource Quiet}" Content="Locate game" AutomationProperties.Name="Locate Fable I" Margin="0,2,0,0"/>
+        </StackPanel>
+       </Grid>
+       <Path Data="M 8,27 L 8,8 27,8 M 27,8 L 30,5 M 8,27 L 5,30" Stroke="#F0D598" StrokeThickness="1" IsHitTestVisible="False" HorizontalAlignment="Left" VerticalAlignment="Top"/>
+       <Path Data="M 8,27 L 8,8 27,8" Stroke="#D6B778" StrokeThickness="1" IsHitTestVisible="False" HorizontalAlignment="Right" VerticalAlignment="Bottom" Margin="0,0,5,5"><Path.RenderTransform><RotateTransform Angle="180" CenterX="17" CenterY="17"/></Path.RenderTransform></Path>
+      </Grid>
+     </Border>
+     <Border Grid.Column="2" Style="{StaticResource Card}">
+      <Grid>
+       <Rectangle x:Name="fable2Art" RadiusX="6" RadiusY="6" Margin="1">
+        <Rectangle.Fill><ImageBrush Stretch="UniformToFill" Viewbox="0,0.117,1,0.806" ViewboxUnits="RelativeToBoundingBox" AlignmentX="Center" AlignmentY="Top"/></Rectangle.Fill>
+       </Rectangle>
+       <Rectangle RadiusX="6" RadiusY="6" Margin="1" IsHitTestVisible="False">
+        <Rectangle.Fill><LinearGradientBrush StartPoint="0,0" EndPoint="0,1"><GradientStop Color="#30060B10"/><GradientStop Color="#00060B10" Offset="0.28"/><GradientStop Color="#40060B10" Offset="0.40"/><GradientStop Color="#F50B1118" Offset="0.56"/><GradientStop Color="#FF0B1118" Offset="1"/></LinearGradientBrush></Rectangle.Fill>
+       </Rectangle>
+       <Grid Margin="23,20,23,16">
+        <Grid.RowDefinitions><RowDefinition Height="Auto"/><RowDefinition Height="*"/><RowDefinition Height="Auto"/></Grid.RowDefinitions>
+        <Grid><Border Background="#B00B1218" CornerRadius="2" Padding="8,5" HorizontalAlignment="Left"><TextBlock Text="C H A P T E R   II" FontSize="9" Foreground="#F1E5CE" VerticalAlignment="Center"/></Border>
+         <Border Background="#D90B1218" BorderBrush="#6F766957" BorderThickness="1" CornerRadius="10" Padding="9,4" HorizontalAlignment="Right"><TextBlock x:Name="fable2Badge" FontSize="9" Foreground="#E5C58A"/></Border>
+        </Grid>
+        <StackPanel Grid.Row="2">
+         <TextBlock Text="A WORLD OF CONSEQUENCE" FontSize="9" Foreground="#D1AD6D" Margin="0,0,0,9"/>
+         <TextBlock Text="Fable II" FontFamily="Georgia" FontSize="35" Foreground="#FFF0D7"/>
+         <TextBlock Text="Become the hero you choose." FontFamily="Georgia" FontStyle="Italic" FontSize="13" Foreground="#BEC2BE" Margin="0,9,0,22" TextWrapping="Wrap"/>
+         <Button x:Name="fable2Play" Content="Play" AutomationProperties.Name="Play Fable II"/>
+         <Button x:Name="fable2Locate" Style="{StaticResource Quiet}" Content="Locate game" AutomationProperties.Name="Locate Fable II" Margin="0,2,0,0"/>
+        </StackPanel>
+       </Grid>
+       <Path Data="M 8,27 L 8,8 27,8 M 27,8 L 30,5 M 8,27 L 5,30" Stroke="#F0D598" StrokeThickness="1" IsHitTestVisible="False" HorizontalAlignment="Left" VerticalAlignment="Top"/>
+       <Path Data="M 8,27 L 8,8 27,8" Stroke="#D6B778" StrokeThickness="1" IsHitTestVisible="False" HorizontalAlignment="Right" VerticalAlignment="Bottom" Margin="0,0,5,5"><Path.RenderTransform><RotateTransform Angle="180" CenterX="17" CenterY="17"/></Path.RenderTransform></Path>
+      </Grid>
+     </Border>
+     <Border Grid.Column="4" Style="{StaticResource Card}">
+      <Grid>
+       <Rectangle x:Name="fable3Art" RadiusX="6" RadiusY="6" Margin="1">
+        <Rectangle.Fill><ImageBrush Stretch="UniformToFill" Viewbox="0,0.117,1,0.806" ViewboxUnits="RelativeToBoundingBox" AlignmentX="Center" AlignmentY="Top"/></Rectangle.Fill>
+       </Rectangle>
+       <Rectangle RadiusX="6" RadiusY="6" Margin="1" IsHitTestVisible="False">
+        <Rectangle.Fill><LinearGradientBrush StartPoint="0,0" EndPoint="0,1"><GradientStop Color="#30060B10"/><GradientStop Color="#00060B10" Offset="0.28"/><GradientStop Color="#40060B10" Offset="0.40"/><GradientStop Color="#F50B1118" Offset="0.56"/><GradientStop Color="#FF0B1118" Offset="1"/></LinearGradientBrush></Rectangle.Fill>
+       </Rectangle>
+       <Grid Margin="23,20,23,16">
+        <Grid.RowDefinitions><RowDefinition Height="Auto"/><RowDefinition Height="*"/><RowDefinition Height="Auto"/></Grid.RowDefinitions>
+        <Grid><Border Background="#B00B1218" CornerRadius="2" Padding="8,5" HorizontalAlignment="Left"><TextBlock Text="C H A P T E R   III" FontSize="9" Foreground="#F1E5CE" VerticalAlignment="Center"/></Border>
+         <Border Background="#D90B1218" BorderBrush="#6F766957" BorderThickness="1" CornerRadius="10" Padding="9,4" HorizontalAlignment="Right"><TextBlock x:Name="fable3Badge" FontSize="9" Foreground="#E5C58A"/></Border>
+        </Grid>
+        <StackPanel Grid.Row="2">
+         <TextBlock Text="THE WEIGHT OF A CROWN" FontSize="9" Foreground="#D1AD6D" Margin="0,0,0,9"/>
+         <TextBlock Text="Fable III" FontFamily="Georgia" FontSize="35" Foreground="#FFF0D7"/>
+         <TextBlock Text="Crown the revolution." FontFamily="Georgia" FontStyle="Italic" FontSize="13" Foreground="#BEC2BE" Margin="0,9,0,22" TextWrapping="Wrap"/>
+         <Button x:Name="fable3Play" Content="Play" AutomationProperties.Name="Play Fable III"/>
+         <Button x:Name="fable3Locate" Style="{StaticResource Quiet}" Content="Locate game" AutomationProperties.Name="Locate Fable III" Margin="0,2,0,0"/>
+        </StackPanel>
+       </Grid>
+       <Path Data="M 8,27 L 8,8 27,8 M 27,8 L 30,5 M 8,27 L 5,30" Stroke="#F0D598" StrokeThickness="1" IsHitTestVisible="False" HorizontalAlignment="Left" VerticalAlignment="Top"/>
+       <Path Data="M 8,27 L 8,8 27,8" Stroke="#D6B778" StrokeThickness="1" IsHitTestVisible="False" HorizontalAlignment="Right" VerticalAlignment="Bottom" Margin="0,0,5,5"><Path.RenderTransform><RotateTransform Angle="180" CenterX="17" CenterY="17"/></Path.RenderTransform></Path>
+      </Grid>
+     </Border>
+    </Grid>
+    <Grid Grid.Row="3" Margin="0,15,0,0">
+     <Grid.ColumnDefinitions><ColumnDefinition Width="*"/><ColumnDefinition Width="Auto"/></Grid.ColumnDefinitions>
+     <StackPanel Orientation="Horizontal" VerticalAlignment="Center"><Path Data="M 0,4 L 4,0 8,4 4,8 Z" Fill="#B59861" VerticalAlignment="Center" Margin="0,0,10,0"/><TextBlock x:Name="Status" Text="Your next adventure awaits." FontSize="11" Foreground="#A5AFAF" VerticalAlignment="Center"/></StackPanel>
+     <TextBlock Grid.Column="1" Text="THREE CHAPTERS  /  ONE ALBION" FontSize="9" Foreground="#877B64" VerticalAlignment="Center"/>
+    </Grid>
+   </Grid>
   </Grid>
+ </Border>
 </Window>
