@@ -12,6 +12,24 @@ Fable I starts as **Not installed**. Later, choose **Locate game** and select it
 
 Selected locations are stored only on your PC in `%LOCALAPPDATA%/AlbionReborn/games.json`. Automatic discovery does not overwrite a manually chosen location. The launcher never edits game configurations, saves, caches, or assets. It detects already running configured games and prevents launching another game concurrently. Closing the launcher leaves the game running.
 
+## Menu music and Theresa
+
+The launcher can loop Fable II's `menu_interlude` quietly in the background. On Play, the music stops and the original front-end recording says **"And so our story begins..."** before the selected game starts. Music resumes after the game exits. **Audio: On / Off** mutes both the music and launch dialogue and remembers that preference. Minimizing pauses the music. The mute preference is stored separately in `%LOCALAPPDATA%/AlbionReborn/audio-settings.json`.
+
+Prepare the recordings once from your own local English Fable II installation:
+
+```powershell
+powershell -NoProfile -ExecutionPolicy Bypass -File .\Prepare-Audio.ps1
+# For another installation location:
+powershell -NoProfile -ExecutionPolicy Bypass -File .\Prepare-Audio.ps1 -GameRoot "D:\Games\Fable II"
+```
+
+The helper reads two specific entries without changing the source banks. It downloads a SHA-256-checked, pinned vgmstream r2117 decoder if needed and stores the decoder, its original license notices, and extracted recordings under `%LOCALAPPDATA%/AlbionReborn/`. An existing decoder can be selected with `-DecoderPath`. No audio is downloaded from soundtrack or video sites, synthesized, or uploaded to GitHub. The game's recordings retain their owners' rights and are not covered by the launcher's code license.
+
+Without prepared audio the launcher remains usable and starts games immediately. A failed voice clip falls back to launching, with a five-second timeout so Play cannot hang. Closing the launcher during the voice introduction cancels the pending launch. `Test.Audio.ps1` exercises real media decoding and dialogue completion with a stubbed game launch; it also checks mute, missing-dialogue fallback, and music stop/resume without starting a game.
+
+Format references: [Fable 2 Asset Browser's bank and text format implementations](https://github.com/adarec1994/Fable2AssetBrowser), [vgmstream decoder](https://github.com/vgmstream/vgmstream/releases/tag/r2117). The helper implements only the small v3 bank subset needed for these two local entries. Theresa's entry is `TEXT_QUEST_QC010_FRONT_END_10.wav`; the English text bank resolves its tag to the quoted line. Prepared durations are approximately 2:38.63 for music and 1.852 seconds for dialogue.
+
 ## Development
 
 `Launcher.Core.ps1` handles discovery, local settings, launch validation, and child process startup. `AlbionReborn.ps1` connects that logic to the WPF interface in `Launcher.xaml`.
@@ -23,6 +41,7 @@ powershell -NoProfile -STA -File .\AlbionReborn.ps1 -Check
 powershell -NoProfile -STA -File .\AlbionReborn.ps1 -Launch fable2 -DryRun
 powershell -NoProfile -STA -File .\AlbionReborn.ps1 -Launch fable3 -DryRun
 powershell -NoProfile -STA -File .\Test.ps1
+powershell -NoProfile -STA -File .\Test.Audio.ps1
 ```
 
 `-Check` and `-DryRun` do not start games or write preferences. `-SettingsPath` selects a separate preferences file for testing. Paths with spaces are supported. Invalid locations show a recoverable error and can be changed with the file picker.

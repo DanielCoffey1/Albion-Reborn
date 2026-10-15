@@ -96,6 +96,7 @@ $status=$window.FindName('Status')
 $launchingUntil=[datetime]::MinValue
 $launchingId=''
 $lastRunningName=''
+. (Join-Path $PSScriptRoot 'Launcher.Audio.ps1')
 
 function Update-AlbionView {
     $runningName=''
@@ -121,6 +122,8 @@ function Update-AlbionView {
     elseif ($script:lastRunningName) { $status.Text='Choose your next story.' }
     $script:lastRunningName=$runningName
     $window.FindName('CollectionCount').Text="$readyCount of 3 ready"
+    $script:audioGameRunning=[bool]$runningName
+    Sync-AlbionMusic
 }
 
 foreach ($game in Get-AlbionCatalog) {
@@ -139,11 +142,7 @@ foreach ($game in Get-AlbionCatalog) {
                     if (@(Get-AlbionGameProcess $otherPlan).Count) { throw "Close $($other.Name) before launching another game." }
                 }
             }
-            $script:launchingUntil=[datetime]::Now.AddSeconds(15)
-            $script:launchingId=$selected
-            $null=Start-AlbionGame $plan
-            $status.Text='Launching ' + (@(Get-AlbionCatalog | Where-Object Id -eq $selected)[0].Name) + '...'
-            Update-AlbionView
+            Begin-AlbionAudioLaunch $plan
         } catch {
             $script:launchingUntil=[datetime]::MinValue
             $status.Text=$_.Exception.Message

@@ -13,3 +13,10 @@ game/
 saves/
 cache/
 assets/covers/
+*.wav
+*.xma
+*.bnk
+*.adb
+*.mp3
+*.ogg
+*.flac
