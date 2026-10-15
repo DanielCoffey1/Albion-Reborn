@@ -1,0 +1,14 @@
+# Local installations, preferences, build products, and diagnostics never ship.
+*.exe
+*.dll
+*.iso
+*.xex
+*.lnk
+*.log
+games.json
+*.local.json
+work/
+out/
+game/
+saves/
+cache/
