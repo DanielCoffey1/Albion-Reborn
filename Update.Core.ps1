@@ -14,7 +14,7 @@ function Read-AlbionUpdateJson([IO.Stream]$Stream) {
 }
 function Get-AlbionOnlineUpdate {
     [Net.ServicePointManager]::SecurityProtocol=[Net.SecurityProtocolType]::Tls12
-    $headers=@{'User-Agent'='AlbionReborn-Updater';Accept='application/vnd.github+json'}
+    $headers=@{'User-Agent'='AlbionReborn-Updater';Accept='application/vnd.github+json';'Cache-Control'='no-cache'}
     $releases=Invoke-RestMethod -UseBasicParsing -Headers $headers -TimeoutSec 25 -Uri 'https://api.github.com/repos/DanielCoffey1/Albion-Reborn/releases?per_page=30'
     $best=$null
     foreach($release in $releases){
@@ -24,7 +24,7 @@ function Get-AlbionOnlineUpdate {
         $url=[string]$asset[0].browser_download_url
         if($url -notmatch '^https://github\.com/DanielCoffey1/Albion-Reborn/releases/download/[A-Za-z0-9._-]+/albion-update\.json$'){continue}
         if([long]$asset[0].size -gt 65536){throw 'Update manifest is too large.'}
-        $response=Invoke-WebRequest -UseBasicParsing -Headers $headers -TimeoutSec 25 -Uri $url
+        $response=Invoke-WebRequest -UseBasicParsing -Headers $headers -TimeoutSec 25 -Uri ($url+'?asset_id='+$asset[0].id)
         $response.RawContentStream.Position=0
         try{$manifest=Read-AlbionUpdateJson $response.RawContentStream}finally{$response.RawContentStream.Dispose()}
         Test-AlbionUpdateManifest $manifest

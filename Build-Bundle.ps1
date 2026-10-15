@@ -1,10 +1,10 @@
-param([string]$PackageDirectory='', [string]$DecoderDirectory='', [string]$Destination='', [string]$ReleaseTag='v0.3.0-preview')
+param([string]$PackageDirectory='', [string]$DecoderDirectory='', [string]$Destination='', [string]$ReleaseTag='v0.3.1-preview')
 $ErrorActionPreference='Stop'
 if(!$PackageDirectory){$PackageDirectory=Join-Path $PSScriptRoot 'packages'}
 if(!$DecoderDirectory){$DecoderDirectory=Join-Path $env:LOCALAPPDATA 'AlbionReborn\tools\vgmstream-r2117'}
 if(!$Destination){$Destination=Join-Path $PSScriptRoot 'out\distribution'}
 Add-Type -AssemblyName System.IO.Compression.FileSystem
-$stamp='0.3.0-preview-'+[datetime]::UtcNow.ToString('yyyyMMddHHmmss')
+$stamp='0.3.1-preview-'+[datetime]::UtcNow.ToString('yyyyMMddHHmmss')
 $stage=Join-Path $PSScriptRoot ('work\bundles\'+$stamp)
 New-Item -ItemType Directory -Path $stage,$Destination -Force | Out-Null
 @{version=$stamp;channel='preview'} | ConvertTo-Json | Set-Content (Join-Path $stage 'build-info.json') -Encoding UTF8
