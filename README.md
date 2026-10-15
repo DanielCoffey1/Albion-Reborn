@@ -4,7 +4,7 @@ A Windows desktop launcher for Daniel's Fable collection: Fable II and Fable III
 
 ## Download and install
 
-Download the Windows installer from [GitHub Releases](https://github.com/DanielCoffey1/Albion-Reborn/releases/latest), install Albion Reborn, then choose **Set up / update** and select your own supported game files. This is an unsigned Windows x64 preview. Fable II GOTY USA/Europe and Fable III USA/Europe revision 0.0.0.3 are supported. Game data and audio recordings are not included. Fable II setup prepares menu music and Theresa's introduction from your local English game files; Fable III alone does not provide those recordings.
+Download the Windows installer from [GitHub Releases](https://github.com/DanielCoffey1/Albion-Reborn/releases), install Albion Reborn, then choose **Set up / update** and select your own supported game files. This is an unsigned Windows x64 preview. Fable II GOTY USA/Europe and Fable III USA/Europe revision 0.0.0.3 are supported. Game data and audio recordings are not included. Fable II setup prepares menu music and Theresa's introduction from your local English game files; Fable III alone does not provide those recordings.
 
 The game development repositories can remain private. Release installers include prebuilt runtimes, so players do not need access to the source repositories or build tools.
 
