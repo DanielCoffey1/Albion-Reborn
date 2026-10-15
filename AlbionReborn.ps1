@@ -35,6 +35,8 @@ Add-Type -AssemblyName PresentationFramework,PresentationCore,WindowsBase
 if ([Threading.Thread]::CurrentThread.ApartmentState -ne 'STA') { throw 'Launch with Windows PowerShell -STA.' }
 [xml]$xaml=Get-Content -LiteralPath (Join-Path $PSScriptRoot 'Launcher.xaml') -Raw -Encoding UTF8
 $window=[Windows.Markup.XamlReader]::Load([Xml.XmlNodeReader]::new($xaml))
+$iconPath=Join-Path $PSScriptRoot 'assets\AlbionReborn.ico'
+if (Test-Path -LiteralPath $iconPath) { $window.Icon=[Windows.Media.Imaging.BitmapFrame]::Create([uri]$iconPath) }
 $landscapePath=Join-Path $PSScriptRoot 'assets\albion-landscape.png'
 if (Test-Path -LiteralPath $landscapePath) {
     $landscape=[Windows.Media.Imaging.BitmapImage]::new()

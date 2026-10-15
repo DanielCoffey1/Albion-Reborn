@@ -1,5 +1,6 @@
 param([switch]$DesktopShortcut, [switch]$SkipArtwork)
 $ErrorActionPreference='Stop'
+& (Join-Path $PSScriptRoot 'Make-Icon.ps1')
 if (!$SkipArtwork) {
     try { & (Join-Path $PSScriptRoot 'Fetch-Art.ps1') }
     catch { Write-Warning "Artwork is unavailable; the launcher still works. $($_.Exception.Message)" }
@@ -11,7 +12,7 @@ if (!$automation) { throw 'Windows PowerShell 5.1 is required.' }
 $output=Join-Path $PSScriptRoot 'out'
 New-Item -ItemType Directory -Path $output -Force | Out-Null
 $executable=Join-Path $output 'AlbionReborn.exe'
-& $compiler /nologo /target:winexe /platform:x64 /optimize+ "/out:$executable" "/reference:$($automation.FullName)" /reference:System.Windows.Forms.dll (Join-Path $PSScriptRoot 'Host.cs')
+& $compiler /nologo /target:winexe /platform:x64 /optimize+ "/win32icon:$PSScriptRoot\assets\AlbionReborn.ico" "/out:$executable" "/reference:$($automation.FullName)" /reference:System.Windows.Forms.dll (Join-Path $PSScriptRoot 'Host.cs')
 if ($LASTEXITCODE -ne 0) { throw 'Launcher host build failed.' }
 if ($DesktopShortcut) {
     $shell=New-Object -ComObject WScript.Shell
@@ -19,7 +20,7 @@ if ($DesktopShortcut) {
     $shortcut.TargetPath=$executable
     $shortcut.WorkingDirectory=$PSScriptRoot
     $shortcut.Description='Choose Fable II or Fable III, and add Fable I later.'
-    $shortcut.IconLocation="$executable,0"
+    $shortcut.IconLocation="$(Join-Path $PSScriptRoot 'assets\AlbionReborn.ico'),0"
     $shortcut.Save()
 }
 Write-Output "Built $executable"

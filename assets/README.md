@@ -1,5 +1,7 @@
 # Artwork provenance
 
+`AlbionMark.xaml` is the original gold-and-teal A crest used for the app icon. `Make-Icon.ps1` renders it into `AlbionReborn.png` and a seven-size `AlbionReborn.ico` (16 through 256 pixels). The desktop shortcut references that ICO directly; builds also embed it in the executable, and the WPF window loads it for its app/taskbar icon. These original vector and icon assets are included under the project's MIT license.
+
 The cards display promotional cover art from the official Xbox store listings. The first chapter uses Fable Anniversary's cover to represent Fable I; this does not select or install that edition.
 
 - [Fable Anniversary](https://www.xbox.com/en-US/games/store/_/C2Q32JM0BPZL)

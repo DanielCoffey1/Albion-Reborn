@@ -1,0 +1,19 @@
+<DrawingGroup xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation">
+ <DrawingGroup.Children>
+  <GeometryDrawing Geometry="M 22,4 L 234,4 Q 252,4 252,22 L 252,234 Q 252,252 234,252 L 22,252 Q 4,252 4,234 L 4,22 Q 4,4 22,4 Z">
+   <GeometryDrawing.Brush><LinearGradientBrush StartPoint="0,0" EndPoint="1,1"><GradientStop Color="#284448"/><GradientStop Color="#0B171F" Offset="1"/></LinearGradientBrush></GeometryDrawing.Brush>
+   <GeometryDrawing.Pen><Pen Brush="#7E704B" Thickness="3"/></GeometryDrawing.Pen>
+  </GeometryDrawing>
+  <GeometryDrawing Geometry="M 128,22 L 220,73 220,182 128,235 36,182 36,73 Z">
+   <GeometryDrawing.Brush><LinearGradientBrush StartPoint="0,0" EndPoint="0,1"><GradientStop Color="#254044"/><GradientStop Color="#11232C" Offset="1"/></LinearGradientBrush></GeometryDrawing.Brush>
+   <GeometryDrawing.Pen><Pen Thickness="5"><Pen.Brush><LinearGradientBrush StartPoint="0,0" EndPoint="1,1"><GradientStop Color="#FFF0BA"/><GradientStop Color="#A27B39" Offset="1"/></LinearGradientBrush></Pen.Brush></Pen></GeometryDrawing.Pen>
+  </GeometryDrawing>
+  <GeometryDrawing Geometry="M 128,37 L 207,81 207,174 128,220 49,174 49,81 Z">
+   <GeometryDrawing.Pen><Pen Brush="#82764C" Thickness="2"/></GeometryDrawing.Pen>
+  </GeometryDrawing>
+  <GeometryDrawing Geometry="M 80,176 L 122,76 134,76 176,176 159,176 148,148 108,148 97,176 Z M 114,133 L 142,133 128,98 Z">
+   <GeometryDrawing.Brush><LinearGradientBrush StartPoint="0,0" EndPoint="0,1"><GradientStop Color="#FFF2BF"/><GradientStop Color="#D3A95D" Offset="1"/></LinearGradientBrush></GeometryDrawing.Brush>
+  </GeometryDrawing>
+  <GeometryDrawing Brush="#E7C67F" Geometry="M 128,49 L 134,55 128,61 122,55 Z M 128,191 L 134,197 128,203 122,197 Z M 62,124 L 67,129 62,134 57,129 Z M 194,124 L 199,129 194,134 189,129 Z"/>
+ </DrawingGroup.Children>
+</DrawingGroup>
