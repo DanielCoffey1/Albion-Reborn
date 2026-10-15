@@ -1,11 +1,13 @@
-param([string]$GameRoot, [string]$DecoderPath)
+﻿param([string]$GameRoot, [string]$DecoderPath)
 $ErrorActionPreference='Stop'
 . (Join-Path $PSScriptRoot 'Launcher.Core.ps1')
 if (!$GameRoot) {
     $settings=Read-AlbionSettings (Join-Path $env:LOCALAPPDATA 'AlbionReborn\games.json')
     Find-AlbionInstallations $settings ([Environment]::GetFolderPath('MyDocuments'))
     if (!$settings.ContainsKey('fable2')) { throw 'Locate Fable II first, or pass -GameRoot with its installation directory.' }
-    $GameRoot=Split-Path -Parent $settings.fable2
+    if([IO.Path]::GetExtension($settings.fable2) -eq '.json') {
+        $GameRoot=(Get-Content -LiteralPath $settings.fable2 -Raw -Encoding UTF8 | ConvertFrom-Json).gameRoot
+    } else { $GameRoot=Split-Path -Parent $settings.fable2 }
 }
 $output=Join-Path $env:LOCALAPPDATA 'AlbionReborn\audio'
 New-Item -ItemType Directory -Path $output -Force | Out-Null

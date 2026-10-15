@@ -1,4 +1,4 @@
-# Optional local game recordings; absence or media failure must never block Play.
+﻿# Optional local game recordings; absence or media failure must never block Play.
 $audioDirectory=Join-Path $env:LOCALAPPDATA 'AlbionReborn\audio'
 $audioPreferences=Join-Path $env:LOCALAPPDATA 'AlbionReborn\audio-settings.json'
 $audioMuted=$false
@@ -9,23 +9,35 @@ try {
 } catch { $audioMuted=$false }
 $music=[Windows.Media.MediaPlayer]::new()
 $voice=[Windows.Media.MediaPlayer]::new()
-$music.Volume=0.22
+$music.Volume=0.4
 $voice.Volume=0.9
 $musicAvailable=Test-Path -LiteralPath (Join-Path $audioDirectory 'menu.wav')
 $voiceAvailable=Test-Path -LiteralPath (Join-Path $audioDirectory 'theresa.wav')
 $musicPlaying=$false
 $audioGameRunning=$false
 $pendingLaunch=$null
+$audioError=''
 $voiceTimeout=[Windows.Threading.DispatcherTimer]::new()
 $voiceTimeout.Interval=[timespan]::FromSeconds(5)
 
+function Refresh-AlbionAudio {
+    foreach($clip in @(@{Name='menu';Player=$music;Flag='musicAvailable'},@{Name='theresa';Player=$voice;Flag='voiceAvailable'})) {
+        $path=Join-Path $audioDirectory ($clip.Name+'.wav')
+        if(!(Get-Variable $clip.Flag -Scope Script -ValueOnly) -and (Test-Path -LiteralPath $path)) {
+            Set-Variable $clip.Flag $true -Scope Script
+            $clip.Player.Open([uri]$path)
+        }
+    }
+}
+
 function Sync-AlbionMusic {
+    Refresh-AlbionAudio
     $shouldPlay=$script:musicAvailable -and !$script:audioMuted -and !$script:audioGameRunning -and
         !$script:pendingLaunch -and [datetime]::Now -ge $script:launchingUntil -and $window.WindowState -ne 'Minimized'
     if ($shouldPlay -and !$script:musicPlaying) { $music.Play(); $script:musicPlaying=$true }
     elseif (!$shouldPlay -and $script:musicPlaying) { $music.Pause(); $script:musicPlaying=$false }
     $window.FindName('AudioToggle').Content=if ($script:audioMuted) { 'Audio: Off' } else { 'Audio: On' }
-    $window.FindName('AudioToggle').ToolTip=if (!$script:musicAvailable) { 'Run Prepare-Audio.ps1 to add your local game audio.' } else { 'Toggle menu music and the launch voice line.' }
+    $window.FindName('AudioToggle').ToolTip=if ($script:audioError) { $script:audioError } elseif (!$script:musicAvailable) { 'Run Prepare-Audio.ps1 to add your local game audio.' } else { 'Toggle menu music and the launch voice line.' }
 }
 
 function Complete-AlbionLaunch {
@@ -64,9 +76,10 @@ function Begin-AlbionAudioLaunch($Plan) {
 }
 
 $music.Add_MediaEnded({ $music.Position=[timespan]::Zero; $script:musicPlaying=$false; Sync-AlbionMusic })
-$music.Add_MediaFailed({ $script:musicAvailable=$false; $script:musicPlaying=$false })
+$music.Add_MediaOpened({ Sync-AlbionMusic })
+$music.Add_MediaFailed({param($sender,$args) $script:audioError='Menu audio: '+$args.ErrorException.Message; $script:musicAvailable=$false; $script:musicPlaying=$false })
 $voice.Add_MediaEnded({ Complete-AlbionLaunch })
-$voice.Add_MediaFailed({ $script:voiceAvailable=$false; Complete-AlbionLaunch })
+$voice.Add_MediaFailed({param($sender,$args) $script:audioError='Launch voice: '+$args.ErrorException.Message; $script:voiceAvailable=$false; Complete-AlbionLaunch })
 $voiceTimeout.Add_Tick({ Complete-AlbionLaunch })
 if ($musicAvailable) { $music.Open([uri](Join-Path $audioDirectory 'menu.wav')) }
 if ($voiceAvailable) { $voice.Open([uri](Join-Path $audioDirectory 'theresa.wav')) }

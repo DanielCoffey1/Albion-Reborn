@@ -1,6 +1,12 @@
 # Albion Reborn
 
-A Windows desktop launcher for Daniel's Fable collection: Fable II and Fable III now, with a slot for Fable I when an installation is available. This repository contains the launcher only. Each game remains in its own installation and development repository.
+A Windows desktop launcher for Daniel's Fable collection: Fable II and Fable III now, with a slot for Fable I when an installation is available. This source repository contains the launcher; release downloads also include prebuilt runtimes. Each game remains in its own installation and development repository.
+
+## Download and install
+
+Download the Windows installer from [GitHub Releases](https://github.com/DanielCoffey1/Albion-Reborn/releases/latest), install Albion Reborn, then choose **Set up / update** and select your own supported game files. This is an unsigned Windows x64 preview. Fable II GOTY USA/Europe and Fable III USA/Europe revision 0.0.0.3 are supported. Game data and audio recordings are not included. Fable II setup prepares menu music and Theresa's introduction from your local English game files; Fable III alone does not provide those recordings.
+
+The game development repositories can remain private. Release installers include prebuilt runtimes, so players do not need access to the source repositories or build tools.
 
 ## Run
 
@@ -20,7 +26,7 @@ ISO setup extracts content into `%LOCALAPPDATA%/AlbionReborn/games/<id>/content/
 
 **Update installed runtime** uses the version bundled with this copy of Albion Reborn, checks package and file SHA-256 hashes, backs up replaced runtime files, and preserves existing seed configs and saves. It is not an online updater. Close games before setup. Cancellation is available before runtime installation begins. Failed or older content revisions are retained rather than automatically deleted.
 
-Runtime packages and installer binaries stay in ignored local directories and are not published by these scripts. The source repository alone does not include the playable runtimes. Private game source repositories can remain private: an offline installer needs their build outputs, not access to their GitHub repositories. Public distribution and release hosting are separate work; this is a local, unsigned preview and has not been validated on a second PC.
+Runtime packages and installer binaries stay in ignored local directories; publishing a GitHub release is a separate explicit step. The source repository alone does not include the playable runtimes. Private game source repositories can remain private: an offline installer needs their build outputs, not access to their GitHub repositories. Preview installers are available through GitHub Releases. They are unsigned and have not been validated on a second PC.
 
 ## Menu music and Theresa
 
@@ -64,7 +70,7 @@ Game projects: [Fable II PC](https://github.com/DanielCoffey1/Fable-II-PC), [Fab
 
 ## Build a bundled preview
 
-Build the launcher first with `Build.ps1 -SkipArtwork`. Use `Build-RuntimePackages.ps1 -Fable2Runtime <built-folder> -Fable3Runtime <built-folder> -CrtDirectory <VC143-CRT-folder>` to produce allowlisted runtime ZIPs and a hash catalog under ignored `packages/`. This requires the sibling game repositories for their license notices and the already-built native game runtimes. It excludes ISO content, default.xex, saves, shader caches, logs, and debug symbols. Runtime binaries contain recompiled game code and are not covered solely by the launcher's code license.
+Build the launcher first with `Build.ps1 -SkipArtwork`. Use `Build-RuntimePackages.ps1 -Fable2Runtime <built-folder> -Fable3Runtime <built-folder> -CrtDirectory <VC143-CRT-folder>` to produce allowlisted runtime ZIPs and a hash catalog under ignored `out/packages/` (pass `-Destination .\packages` for the default bundle input). This requires the sibling game repositories for their license notices and the already-built native game runtimes. It excludes ISO content, default.xex, saves, shader caches, logs, and debug symbols. Runtime binaries contain recompiled game code and are not covered solely by the launcher's code license.
 
 Run `Build-Bundle.ps1 -DecoderDirectory <vgmstream-folder>` to produce the portable ZIP and Windows installer in `out/distribution/`. Existing cover artwork is included in the local preview; no assets are stripped from the working installations. The optional decoder lets Fable II setup prepare music locally without a download. Installer extraction is per-user and requires no elevation. `--verify` checks the embedded payload; `--extract-to <parent-folder>` extracts without creating a shortcut or launching the app.
 
