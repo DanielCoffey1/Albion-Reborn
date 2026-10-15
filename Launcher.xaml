@@ -197,7 +197,7 @@
     <Grid Grid.Row="3" Margin="0,15,0,0">
      <Grid.ColumnDefinitions><ColumnDefinition Width="*"/><ColumnDefinition Width="Auto"/><ColumnDefinition Width="Auto"/></Grid.ColumnDefinitions>
      <StackPanel Orientation="Horizontal" VerticalAlignment="Center"><Path Data="M 0,4 L 4,0 8,4 4,8 Z" Fill="#B59861" VerticalAlignment="Center" Margin="0,0,10,0"/><TextBlock x:Name="Status" Text="Your next adventure awaits." FontSize="11" Foreground="#A5AFAF" VerticalAlignment="Center"/></StackPanel>
-     <Button Grid.Column="1" x:Name="AudioToggle" Style="{StaticResource Quiet}" Content="Audio: On" Margin="16,0,22,0" VerticalAlignment="Center" AutomationProperties.Name="Toggle launcher audio"/>
+     <StackPanel Grid.Column="1" Orientation="Horizontal"><Button x:Name="UpdateButton" Style="{StaticResource Quiet}" Content="Check for updates" Margin="12,0,6,0" AutomationProperties.Name="Check for launcher and game updates"/><Button x:Name="AudioToggle" Style="{StaticResource Quiet}" Content="Audio: On" Margin="16,0,22,0" VerticalAlignment="Center" AutomationProperties.Name="Toggle launcher audio"/></StackPanel>
      <TextBlock Grid.Column="2" Text="THREE CHAPTERS  /  ONE ALBION" FontSize="9" Foreground="#877B64" VerticalAlignment="Center"/>
     </Grid>
    </Grid>

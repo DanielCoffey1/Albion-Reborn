@@ -1,13 +1,14 @@
-param([string]$PackageDirectory='', [string]$DecoderDirectory='', [string]$Destination='')
+param([string]$PackageDirectory='', [string]$DecoderDirectory='', [string]$Destination='', [string]$ReleaseTag='v0.3.0-preview')
 $ErrorActionPreference='Stop'
 if(!$PackageDirectory){$PackageDirectory=Join-Path $PSScriptRoot 'packages'}
 if(!$DecoderDirectory){$DecoderDirectory=Join-Path $env:LOCALAPPDATA 'AlbionReborn\tools\vgmstream-r2117'}
 if(!$Destination){$Destination=Join-Path $PSScriptRoot 'out\distribution'}
 Add-Type -AssemblyName System.IO.Compression.FileSystem
-$stamp='0.2.0-preview-'+[datetime]::UtcNow.ToString('yyyyMMddHHmmss')
+$stamp='0.3.0-preview-'+[datetime]::UtcNow.ToString('yyyyMMddHHmmss')
 $stage=Join-Path $PSScriptRoot ('work\bundles\'+$stamp)
 New-Item -ItemType Directory -Path $stage,$Destination -Force | Out-Null
-$files=@('AlbionReborn.ps1','Launcher.Core.ps1','Launcher.Audio.ps1','Launcher.Setup.ps1','Installer.Core.ps1','Install-Game.ps1','Prepare-Audio.ps1','Launcher.xaml','Setup.xaml','Start.cmd','README.md','LICENSE')
+@{version=$stamp;channel='preview'} | ConvertTo-Json | Set-Content (Join-Path $stage 'build-info.json') -Encoding UTF8
+$files=@('AlbionReborn.ps1','Launcher.Core.ps1','Launcher.Audio.ps1','Launcher.Setup.ps1','Launcher.Update.ps1','Update.Core.ps1','Update-Launcher.ps1','Installer.Core.ps1','Install-Game.ps1','Prepare-Audio.ps1','Launcher.xaml','Setup.xaml','Start.cmd','README.md','LICENSE')
 foreach($file in $files){Copy-Item -LiteralPath (Join-Path $PSScriptRoot $file) -Destination (Join-Path $stage $file)}
 foreach($folder in @('out','assets','packages')){New-Item -ItemType Directory -Path (Join-Path $stage $folder) -Force | Out-Null}
 foreach($file in @('AlbionReborn.exe','Albion.Content.dll')){Copy-Item -LiteralPath (Join-Path $PSScriptRoot ('out\'+$file)) -Destination (Join-Path $stage ('out\'+$file))}
@@ -30,6 +31,8 @@ if(Test-Path (Join-Path $DecoderDirectory 'vgmstream-cli.exe')) {
 $payload=Join-Path $Destination ('AlbionReborn-'+$stamp+'.zip')
 [IO.Compression.ZipFile]::CreateFromDirectory($stage,$payload,[IO.Compression.CompressionLevel]::Optimal,$false)
 $hash=(Get-FileHash $payload -Algorithm SHA256).Hash
+if($ReleaseTag -notmatch '^[A-Za-z0-9._-]+$'){throw 'Invalid release tag.'}
+@{schemaVersion=1;version=$stamp;bytes=(Get-Item $payload).Length;sha256=$hash;url=('https://github.com/DanielCoffey1/Albion-Reborn/releases/download/'+$ReleaseTag+'/'+[IO.Path]::GetFileName($payload))} | ConvertTo-Json | Set-Content (Join-Path $Destination 'albion-update.json') -Encoding UTF8
 $source=Get-Content (Join-Path $PSScriptRoot 'packaging\SetupHost.cs') -Raw
 $source=$source.Replace('__BUILD_ID__',$stamp).Replace('__PAYLOAD_HASH__',$hash)
 $generated=Join-Path $stage 'SetupHost.generated.cs'

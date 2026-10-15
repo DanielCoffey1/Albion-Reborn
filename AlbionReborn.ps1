@@ -115,7 +115,7 @@ function Update-AlbionView {
             } catch { $message='Location needs attention' }
         }
         $card.Badge.Text=$message
-        $card.Play.IsEnabled=$ready -and $message -ne 'Running' -and [datetime]::Now -ge $script:launchingUntil
+        $card.Play.IsEnabled=(!$script:updateState -or !$script:updateState.applying) -and $ready -and $message -ne 'Running' -and [datetime]::Now -ge $script:launchingUntil
         $card.Play.Content=if ($message -eq 'Running') { 'Running' } elseif (!$ready) { 'Not installed' } else { 'Play' }
         $card.Play.ToolTip=if ($plan) { $plan.Entry } else { 'Use Locate to add this game.' }
         $card.Locate.Content=if ($settings.ContainsKey($game.Id)) { 'Change location' } else { 'Locate game' }
@@ -180,6 +180,7 @@ $timer.Add_Tick({
 })
 $window.Add_Closed({ $timer.Stop() })
 . (Join-Path $PSScriptRoot 'Launcher.Setup.ps1')
+. (Join-Path $PSScriptRoot 'Launcher.Update.ps1')
 Update-AlbionView
 if ($startupWarning) { $status.Text=$startupWarning }
 $timer.Start()

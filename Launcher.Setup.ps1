@@ -1,5 +1,6 @@
 . (Join-Path $PSScriptRoot 'Installer.Core.ps1')
 function Show-AlbionGameSetup([string]$Id) {
+    if($script:updateState -and $script:updateState.applying){$status.Text='Wait for the launcher update to finish.';return}
     if($script:audioGameRunning -or $script:pendingLaunch){[Windows.MessageBox]::Show($window,'Close the running game before setting up or updating games.','Albion Reborn') | Out-Null;return}
     try {$catalog=Get-AlbionRuntimeCatalog;$runtime=@($catalog.runtimes | Where-Object id -eq $Id)[0]}
     catch {[Windows.MessageBox]::Show($window,$_.Exception.Message,'Albion Reborn') | Out-Null;return}

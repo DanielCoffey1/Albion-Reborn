@@ -24,9 +24,21 @@ The local preview installer includes the launcher and prebuilt Fable II / III ru
 
 ISO setup extracts content into `%LOCALAPPDATA%/AlbionReborn/games/<id>/content/`. Folder setup uses the selected folder in place, so keep it available. Both install the native runtime under that game's `runtime/` directory and register an installation receipt. Managed saves and caches belong to this separate runtime installation; existing legacy saves are not automatically migrated. Original game folders and existing launcher assets are retained.
 
-**Update installed runtime** uses the version bundled with this copy of Albion Reborn, checks package and file SHA-256 hashes, backs up replaced runtime files, and preserves existing seed configs and saves. It is not an online updater. Close games before setup. Cancellation is available before runtime installation begins. Failed or older content revisions are retained rather than automatically deleted.
+**Update installed runtime** uses the version bundled with this copy of Albion Reborn, checks package and file SHA-256 hashes, backs up replaced runtime files, and preserves existing seed configs and saves. This card action uses the bundled packages; online launcher updates are handled by the footer update control. Close games before setup. Cancellation is available before runtime installation begins. Failed or older content revisions are retained rather than automatically deleted.
 
 Runtime packages and installer binaries stay in ignored local directories; publishing a GitHub release is a separate explicit step. The source repository alone does not include the playable runtimes. Private game source repositories can remain private: an offline installer needs their build outputs, not access to their GitHub repositories. Preview installers are available through GitHub Releases. They are unsigned and have not been validated on a second PC.
+
+## Automatic update checks
+
+Starting with 0.3.0, Albion Reborn checks this repository's published GitHub releases in the background each time the launcher opens. The preview channel includes preview releases. **Check for updates** checks again; **Update available - download & restart** downloads and applies the selected release. Offline use and games continue to work when GitHub is unavailable; the control offers a retry. No GitHub login is needed.
+
+Updates download the full portable bundle, check its SHA-256 hash and size against the release manifest, validate archive paths and bundled runtime hashes, then install a new launcher version under `%LOCALAPPDATA%/AlbionReborn/App/`. The updater waits for the launcher to close, refreshes the desktop shortcut, and opens the new version. Older launcher versions remain available. All games must be closed before applying an update. A failed update reports its error and reopens the previous launcher.
+
+Managed games whose runtime package changed are updated using their existing extracted content. Seed configuration files, saves, caches, audio, game locations, and original ISOs are retained; no content extraction or game reinstall is required. Legacy external installations are launched as before and are not rewritten by the updater. The two game runtime updates are independent: if one fails after the other succeeds, the completed update remains installed and the failure is reported.
+
+The original 0.2.0 preview does not contain an updater. Install 0.3.0 once to receive future updates through the launcher. Existing game data and user preferences stay in place. SHA-256 protects against corrupt downloads; updates trust the GitHub release publisher and are not independently code-signed.
+
+Publish each update with the portable ZIP and the `albion-update.json` emitted by `Build-Bundle.ps1 -ReleaseTag <tag>`. Upload both before publishing the release; drafts are ignored. The manifest binds the build ID, exact repository download URL, byte size, and SHA-256. If game code changes, rebuild its runtime package with a new version before bundling. `Test.Update.ps1 -Bundle` checks version ordering, origin rejection, bad hashes, side-by-side launcher replacement, and managed runtime/config preservation without changing the user's library or shortcut.
 
 ## Menu music and Theresa
 

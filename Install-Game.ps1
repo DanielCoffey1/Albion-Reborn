@@ -87,7 +87,9 @@ try {
     $committed=$true
     if($Id -eq 'fable2') {
         $decoder=Join-Path $PSScriptRoot 'tools\vgmstream\vgmstream-cli.exe'
-        if(Test-Path -LiteralPath $decoder) {
+        $audioRoot=Join-Path $env:LOCALAPPDATA 'AlbionReborn\audio'
+        $audioReady=(Test-Path -LiteralPath (Join-Path $audioRoot 'menu.wav')) -and (Test-Path -LiteralPath (Join-Path $audioRoot 'theresa.wav'))
+        if((Test-Path -LiteralPath $decoder) -and !$audioReady) {
             Report 'Preparing launcher music' 96
             try {& (Join-Path $PSScriptRoot 'Prepare-Audio.ps1') -GameRoot $gameRoot -DecoderPath $decoder | Out-Null}catch{} # Optional audio never invalidates a working installation.
         }
