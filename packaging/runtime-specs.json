@@ -1,0 +1,29 @@
+{
+  "schemaVersion": 1,
+  "runtimes": [
+    {
+      "id": "fable2",
+      "name": "Fable II",
+      "version": "2026.10.15.1",
+      "edition": "GOTY USA/Europe",
+      "xexSha256": "88C4EF2E18E65409444D1B068EFF921D1F7E180A5AE64EDC64BA6B0872372662",
+      "exe": "fable_2.exe",
+      "runtimeFiles": ["fable_2.exe", "rexruntime.dll", "rexgpu-xenos.dll", "fable2_build.json"],
+      "seedFiles": ["fable_2.toml", "fable2_config.toml"],
+      "requiredContent": ["data/gold_version.txt", "data/startup.vfsconfig"],
+      "repository": "https://github.com/DanielCoffey1/Fable-II-PC"
+    },
+    {
+      "id": "fable3",
+      "name": "Fable III",
+      "version": "2026.10.15.1",
+      "edition": "USA/Europe revision 0.0.0.3",
+      "xexSha256": "FC725386570788EE08B72A3BFF06CF8227C17922E322FE45860348DDA31DDD54",
+      "exe": "fable_3.exe",
+      "runtimeFiles": ["fable_3.exe", "rexruntime.dll", "rexgpu-fable3.dll"],
+      "seedFiles": [],
+      "requiredContent": ["data"],
+      "repository": "https://github.com/DanielCoffey1/Fable-III-PC"
+    }
+  ]
+}

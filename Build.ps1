@@ -14,6 +14,8 @@ New-Item -ItemType Directory -Path $output -Force | Out-Null
 $executable=Join-Path $output 'AlbionReborn.exe'
 & $compiler /nologo /target:winexe /platform:x64 /optimize+ "/win32icon:$PSScriptRoot\assets\AlbionReborn.ico" "/out:$executable" "/reference:$($automation.FullName)" /reference:System.Windows.Forms.dll (Join-Path $PSScriptRoot 'Host.cs')
 if ($LASTEXITCODE -ne 0) { throw 'Launcher host build failed.' }
+& $compiler /nologo /target:library /platform:x64 /optimize+ "/out:$output\Albion.Content.dll" (Join-Path $PSScriptRoot 'Content.cs')
+if ($LASTEXITCODE -ne 0) { throw 'Game content helper build failed.' }
 if ($DesktopShortcut) {
     $shell=New-Object -ComObject WScript.Shell
     $shortcut=$shell.CreateShortcut((Join-Path ([Environment]::GetFolderPath('Desktop')) 'Albion Reborn.lnk'))

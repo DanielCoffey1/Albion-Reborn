@@ -17,6 +17,11 @@ internal static class AlbionRebornHost
             string root = Directory.GetParent(AppDomain.CurrentDomain.BaseDirectory.TrimEnd(Path.DirectorySeparatorChar)).FullName;
             string script = Path.Combine(root, "AlbionReborn.ps1");
             if (!File.Exists(script)) throw new FileNotFoundException("Keep the out folder beside AlbionReborn.ps1.", script);
+            // An embedded Windows PowerShell runspace must not inherit a PowerShell
+            // 7 module path from a developer terminal or parent application.
+            Environment.SetEnvironmentVariable("PSModulePath",
+                Path.Combine(Environment.SystemDirectory,"WindowsPowerShell","v1.0","Modules") + ";" +
+                Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ProgramFiles),"WindowsPowerShell","Modules"));
             InitialSessionState state = InitialSessionState.CreateDefault();
             state.ExecutionPolicy = Microsoft.PowerShell.ExecutionPolicy.Bypass;
             using (Runspace runspace = RunspaceFactory.CreateRunspace(state))

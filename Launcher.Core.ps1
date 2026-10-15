@@ -49,6 +49,8 @@ function Find-AlbionInstallations {
         fable3 = Join-Path $Documents 'Fable 3\Fable-III-PC\tools\run.ps1'
     }
     foreach ($id in $candidates.Keys) {
+        $managed=Join-Path $env:LOCALAPPDATA ("AlbionReborn\games\$id\installation.json")
+        if (!$Settings.ContainsKey($id) -and (Test-Path -LiteralPath $managed)) { $Settings[$id]=$managed }
         # A user-selected location always wins, including a disconnected drive.
         if (!$Settings.ContainsKey($id) -and (Test-Path -LiteralPath $candidates[$id] -PathType Leaf)) {
             $Settings[$id] = $candidates[$id]
@@ -64,6 +66,19 @@ function Get-AlbionLaunchPlan {
     if ($fullPath.Contains('"')) { throw 'The launch path contains an unsupported quote.' }
     $extension = [IO.Path]::GetExtension($fullPath).ToLowerInvariant()
     $directory = Split-Path -Parent $fullPath
+    if ($extension -eq '.json' -and (Split-Path -Leaf $fullPath) -eq 'installation.json' -and $Id -in @('fable2','fable3')) {
+        $receipt=Get-Content -LiteralPath $fullPath -Raw -Encoding UTF8 | ConvertFrom-Json
+        if($receipt.schemaVersion -ne 1 -or $receipt.id -ne $Id -or $receipt.gameRoot.Contains('"')){throw 'Invalid managed game installation.'}
+        $exe=if($Id -eq 'fable2'){'fable_2.exe'}else{'fable_3.exe'}
+        $runtimeDirectory=Join-Path $directory 'runtime'
+        $processPath=Join-Path $runtimeDirectory $exe
+        if(!(Test-Path -LiteralPath $processPath) -or !(Test-Path -LiteralPath (Join-Path $receipt.gameRoot 'default.xex'))){throw 'Managed installation needs repair. Choose Set up / update.'}
+        $arguments='--game_data_root="'+$receipt.gameRoot+'"'
+        if($Id -eq 'fable3') {
+            $arguments+=' --no-fullscreen --window_width=1280 --window_height=720 --gpu_plugin=fable3 --direct_host_resolve=false --readback_resolve=none --fable3_static_draw_distance_multiplier=1 --fable3_mesh_occlusion_workaround=true --vsync=false --fable3_frame_limit=60 --async_shader_compilation=false'
+        }
+        return [pscustomobject]@{Id=$Id;FileName=$processPath;Arguments=$arguments;WorkingDirectory=$runtimeDirectory;ProcessPath=$processPath;Entry=$fullPath}
+    }
     if ($extension -eq '.ps1' -and $Id -eq 'fable3') {
         if ((Split-Path -Leaf $fullPath) -ne 'run.ps1') { throw 'Choose Fable III-PC\tools\run.ps1 to retain its rendering fixes.' }
         $project = Split-Path -Parent $directory

@@ -133,6 +133,7 @@
          <TextBlock Text="Fable I" FontFamily="Georgia" FontSize="35" Foreground="#FFF0D7"/>
          <TextBlock Text="Where legends begin." FontFamily="Georgia" FontStyle="Italic" FontSize="13" Foreground="#BEC2BE" Margin="0,9,0,22" TextWrapping="Wrap"/>
          <Button x:Name="fable1Play" Content="Play" AutomationProperties.Name="Play Fable I"/>
+         <Button x:Name="fable1Setup" Style="{StaticResource Quiet}" Content="Setup coming later" AutomationProperties.Name="Set up fable1"/>
          <Button x:Name="fable1Locate" Style="{StaticResource Quiet}" Content="Locate game" AutomationProperties.Name="Locate Fable I" Margin="0,2,0,0"/>
         </StackPanel>
        </Grid>
@@ -158,6 +159,7 @@
          <TextBlock Text="Fable II" FontFamily="Georgia" FontSize="35" Foreground="#FFF0D7"/>
          <TextBlock Text="Become the hero you choose." FontFamily="Georgia" FontStyle="Italic" FontSize="13" Foreground="#BEC2BE" Margin="0,9,0,22" TextWrapping="Wrap"/>
          <Button x:Name="fable2Play" Content="Play" AutomationProperties.Name="Play Fable II"/>
+         <Button x:Name="fable2Setup" Style="{StaticResource Quiet}" Content="Set up / update" AutomationProperties.Name="Set up fable2"/>
          <Button x:Name="fable2Locate" Style="{StaticResource Quiet}" Content="Locate game" AutomationProperties.Name="Locate Fable II" Margin="0,2,0,0"/>
         </StackPanel>
        </Grid>
@@ -183,6 +185,7 @@
          <TextBlock Text="Fable III" FontFamily="Georgia" FontSize="35" Foreground="#FFF0D7"/>
          <TextBlock Text="Crown the revolution." FontFamily="Georgia" FontStyle="Italic" FontSize="13" Foreground="#BEC2BE" Margin="0,9,0,22" TextWrapping="Wrap"/>
          <Button x:Name="fable3Play" Content="Play" AutomationProperties.Name="Play Fable III"/>
+         <Button x:Name="fable3Setup" Style="{StaticResource Quiet}" Content="Set up / update" AutomationProperties.Name="Set up fable3"/>
          <Button x:Name="fable3Locate" Style="{StaticResource Quiet}" Content="Locate game" AutomationProperties.Name="Locate Fable III" Margin="0,2,0,0"/>
         </StackPanel>
        </Grid>

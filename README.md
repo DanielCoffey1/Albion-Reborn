@@ -10,7 +10,17 @@ The launcher discovers the existing Documents layouts for Fable II (`Fable 2/Rec
 
 Fable I starts as **Not installed**. Later, choose **Locate game** and select its Windows `.exe`; no launcher rebuild is needed. This slot does not implement or promise a Fable I port.
 
-Selected locations are stored only on your PC in `%LOCALAPPDATA%/AlbionReborn/games.json`. Automatic discovery does not overwrite a manually chosen location. The launcher never edits game configurations, saves, caches, or assets. It detects already running configured games and prevents launching another game concurrently. Closing the launcher leaves the game running.
+Selected locations are stored only on your PC in `%LOCALAPPDATA%/AlbionReborn/games.json`. Automatic discovery does not overwrite a manually chosen location. Legacy launches leave game configurations, saves, caches, and assets unchanged. Managed setup installs runtime files into its own library and preserves existing seed configuration files during updates. It detects already running configured games and prevents launching another game concurrently. Closing the launcher leaves the game running.
+
+## Offline setup preview
+
+The local preview installer includes the launcher and prebuilt Fable II / III runtime packages. Players do not need Git, Visual Studio, access to the private game repositories, or a source build. Install Albion Reborn, choose **Set up / update** on a game card, and select your own supported Xbox 360 ISO or the `default.xex` inside an extracted game folder. Setup checks the executable revision before installing. This preview supports Fable II GOTY USA/Europe and Fable III USA/Europe revision 0.0.0.3; other revisions are rejected. Fable I setup is reserved for later.
+
+ISO setup extracts content into `%LOCALAPPDATA%/AlbionReborn/games/<id>/content/`. Folder setup uses the selected folder in place, so keep it available. Both install the native runtime under that game's `runtime/` directory and register an installation receipt. Managed saves and caches belong to this separate runtime installation; existing legacy saves are not automatically migrated. Original game folders and existing launcher assets are retained.
+
+**Update installed runtime** uses the version bundled with this copy of Albion Reborn, checks package and file SHA-256 hashes, backs up replaced runtime files, and preserves existing seed configs and saves. It is not an online updater. Close games before setup. Cancellation is available before runtime installation begins. Failed or older content revisions are retained rather than automatically deleted.
+
+Runtime packages and installer binaries stay in ignored local directories and are not published by these scripts. The source repository alone does not include the playable runtimes. Private game source repositories can remain private: an offline installer needs their build outputs, not access to their GitHub repositories. Public distribution and release hosting are separate work; this is a local, unsigned preview and has not been validated on a second PC.
 
 ## Menu music and Theresa
 
@@ -51,3 +61,11 @@ Initial local validation: both games launched successfully from the Play buttons
 The storybook interface combines official Xbox promotional cover art with original vector ornament, a custom title bar, warm gold accents, and animated card hover states. Build.ps1 caches artwork from the Microsoft image CDN on first build; the cached images work offline. Use -SkipArtwork for an offline build, or run Fetch-Art.ps1 to fetch missing covers later. Promotional cover art is optional and is not uploaded to Git. The original AI-generated misty town-and-castle background is included in the repository and works offline. Slow mist, golden light, and subtle motes pause when the launcher loses focus or is minimized, and honor Windows' client-area animation preference. See [artwork provenance](assets/README.md); the code license does not cover third-party promotional images. Game names belong to their respective owners. No games, ROMs, disc images, saves, compiled game code, or runtime binaries are distributed here.
 
 Game projects: [Fable II PC](https://github.com/DanielCoffey1/Fable-II-PC), [Fable III PC](https://github.com/DanielCoffey1/Fable-III-PC).
+
+## Build a bundled preview
+
+Build the launcher first with `Build.ps1 -SkipArtwork`. Use `Build-RuntimePackages.ps1 -Fable2Runtime <built-folder> -Fable3Runtime <built-folder> -CrtDirectory <VC143-CRT-folder>` to produce allowlisted runtime ZIPs and a hash catalog under ignored `packages/`. This requires the sibling game repositories for their license notices and the already-built native game runtimes. It excludes ISO content, default.xex, saves, shader caches, logs, and debug symbols. Runtime binaries contain recompiled game code and are not covered solely by the launcher's code license.
+
+Run `Build-Bundle.ps1 -DecoderDirectory <vgmstream-folder>` to produce the portable ZIP and Windows installer in `out/distribution/`. Existing cover artwork is included in the local preview; no assets are stripped from the working installations. The optional decoder lets Fable II setup prepare music locally without a download. Installer extraction is per-user and requires no elevation. `--verify` checks the embedded payload; `--extract-to <parent-folder>` extracts without creating a shortcut or launching the app.
+
+`Test.Setup.ps1` checks unsafe archive paths and unsupported content rejection. Add `-RealInstallations` for isolated installs of both local games, update preservation, managed launch arguments, and cancellation. A full Fable III ISO extraction was also compared against the existing installation: all 286 extracted files matched SHA-256. These checks validate setup integration, not every gameplay scenario.
