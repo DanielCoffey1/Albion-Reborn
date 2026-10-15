@@ -6,6 +6,12 @@ Assert ((Compare-AlbionBuild '0.10.0-preview-20261015000000' '0.3.0-preview-2026
 Assert ((Compare-AlbionBuild '0.3.0-preview-20261016000000' '0.3.0-preview-20261015000000') -gt 0) 'Build ordering failed.'
 $manifest=[pscustomobject]@{schemaVersion=1;version='0.3.0-preview-20261015000000';url='https://github.com/DanielCoffey1/Albion-Reborn/releases/download/v0.3.0-preview/AlbionReborn-test.zip';sha256=('A'*64);bytes=10}
 Test-AlbionUpdateManifest $manifest
+foreach($bom in @($true,$false)){
+    $encoding=[Text.UTF8Encoding]::new($bom)
+    $bytes=$encoding.GetPreamble()+$encoding.GetBytes(($manifest | ConvertTo-Json))
+    $stream=[IO.MemoryStream]::new([byte[]]$bytes)
+    try{$parsed=Read-AlbionUpdateJson $stream;Test-AlbionUpdateManifest $parsed}finally{$stream.Dispose()}
+}
 $manifest.url='https://example.com/AlbionReborn-test.zip';$rejected=$false
 try{Test-AlbionUpdateManifest $manifest}catch{$rejected=$true}
 Assert $rejected 'Foreign update origin was accepted.'

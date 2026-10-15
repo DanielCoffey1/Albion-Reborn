@@ -8,6 +8,10 @@ function Compare-AlbionBuild([string]$Left,[string]$Right) {
     $a=$Left.Split('-');$b=$Right.Split('-');$compare=([version]$a[0]).CompareTo([version]$b[0])
     if($compare -ne 0){return $compare};return [string]::CompareOrdinal($a[2],$b[2])
 }
+function Read-AlbionUpdateJson([IO.Stream]$Stream) {
+    $reader=[IO.StreamReader]::new($Stream,[Text.Encoding]::UTF8,$true,1024,$true)
+    try{return ($reader.ReadToEnd() | ConvertFrom-Json)}finally{$reader.Dispose()}
+}
 function Get-AlbionOnlineUpdate {
     [Net.ServicePointManager]::SecurityProtocol=[Net.SecurityProtocolType]::Tls12
     $headers=@{'User-Agent'='AlbionReborn-Updater';Accept='application/vnd.github+json'}
@@ -19,7 +23,10 @@ function Get-AlbionOnlineUpdate {
         if($asset.Count -ne 1){continue}
         $url=[string]$asset[0].browser_download_url
         if($url -notmatch '^https://github\.com/DanielCoffey1/Albion-Reborn/releases/download/[A-Za-z0-9._-]+/albion-update\.json$'){continue}
-        $manifest=Invoke-RestMethod -UseBasicParsing -Headers $headers -TimeoutSec 25 -Uri $url
+        if([long]$asset[0].size -gt 65536){throw 'Update manifest is too large.'}
+        $response=Invoke-WebRequest -UseBasicParsing -Headers $headers -TimeoutSec 25 -Uri $url
+        $response.RawContentStream.Position=0
+        try{$manifest=Read-AlbionUpdateJson $response.RawContentStream}finally{$response.RawContentStream.Dispose()}
         Test-AlbionUpdateManifest $manifest
         $payload=@($release.assets | Where-Object {$_.browser_download_url -ceq $manifest.url -and $_.state -eq 'uploaded'})
         if($payload.Count -ne 1 -or [long]$payload[0].size -ne [long]$manifest.bytes){throw 'Release asset does not match its update manifest.'}
