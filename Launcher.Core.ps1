@@ -110,15 +110,17 @@ function Get-AlbionLaunchPlan {
     if ($fullPath.Contains('"')) { throw 'The launch path contains an unsupported quote.' }
     $extension = [IO.Path]::GetExtension($fullPath).ToLowerInvariant()
     $directory = Split-Path -Parent $fullPath
-    if ($extension -eq '.json' -and (Split-Path -Leaf $fullPath) -eq 'installation.json' -and $Id -in @('fable2','fable3')) {
+    if ($extension -eq '.json' -and (Split-Path -Leaf $fullPath) -eq 'installation.json' -and $Id -in @('fable1','fable2','fable3')) {
         $receipt=Get-Content -LiteralPath $fullPath -Raw -Encoding UTF8 | ConvertFrom-Json
         if($receipt.schemaVersion -ne 1 -or $receipt.id -ne $Id -or $receipt.gameRoot.Contains('"')){throw 'Invalid managed game installation.'}
-        $exe=if($Id -eq 'fable2'){'fable_2.exe'}else{'fable_3.exe'}
+        $exe=if($Id -eq 'fable1'){'fable_anniversary.exe'}elseif($Id -eq 'fable2'){'fable_2.exe'}else{'fable_3.exe'}
         $runtimeDirectory=Join-Path $directory 'runtime'
         $processPath=Join-Path $runtimeDirectory $exe
         if(!(Test-Path -LiteralPath $processPath) -or !(Test-Path -LiteralPath (Join-Path $receipt.gameRoot 'default.xex'))){throw 'Managed installation needs repair. Choose Set up / update.'}
         $arguments='--game_data_root="'+$receipt.gameRoot+'" --fullscreen=true --resolution='+$Resolution+' --resolution_scale=1'
-        if($Id -eq 'fable3') {
+        if($Id -eq 'fable1') {
+            $arguments+=' --gpu_plugin=xenos --readback_resolve=full --vsync=false --anniversary_frame_limit=30 --async_shader_compilation=false'
+        }elseif($Id -eq 'fable3') {
             $arguments+=" --gpu_plugin=fable3 --direct_host_resolve=false --readback_resolve=none --fable3_static_draw_distance_multiplier=1 --fable3_mesh_occlusion_workaround=true --vsync=false --fable3_frame_limit=$FrameLimit --async_shader_compilation=false"
         }else{$arguments+=" --vsync=false --guest_vblank_pacing=false --frame_limit=$FrameLimit"}
         return [pscustomobject]@{Id=$Id;FileName=$processPath;Arguments=$arguments;WorkingDirectory=$runtimeDirectory;ProcessPath=$processPath;Entry=$fullPath}

@@ -154,7 +154,7 @@
          <TextBlock Text="Fable Anniversary" FontFamily="Georgia" FontSize="26" Foreground="#FFF0D7"/>
          <TextBlock Text="Where legends begin. Tested at 30 FPS." FontFamily="Georgia" FontStyle="Italic" FontSize="13" Foreground="#BEC2BE" Margin="0,9,0,22" TextWrapping="Wrap"/>
          <Button x:Name="fable1Play" Content="Play" AutomationProperties.Name="Play Fable Anniversary"/>
-         <Button x:Name="fable1Setup" Style="{StaticResource Quiet}" Visibility="Collapsed" Content="Local project" AutomationProperties.Name="Set up fable1"/>
+         <Button x:Name="fable1Setup" Style="{StaticResource Quiet}" Content="Set up / update" AutomationProperties.Name="Set up fable1"/>
          <Button x:Name="fable1Locate" Style="{StaticResource Quiet}" Content="Locate game" AutomationProperties.Name="Locate Fable Anniversary" Margin="0,2,0,0"/>
         </StackPanel>
        </Grid>

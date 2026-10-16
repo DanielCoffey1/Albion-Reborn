@@ -76,7 +76,6 @@ function Show-AlbionGameSetup([string]$Id) {
 
 foreach($game in Get-AlbionCatalog) {
     $button=$window.FindName($game.Id+'Setup')
-    if($game.Id -eq 'fable1'){$button.IsEnabled=$false;continue}
     $button.Tag=$game.Id
     $button.Add_Click({param($sender,$eventArgs)Show-AlbionGameSetup ([string]$sender.Tag)})
 }

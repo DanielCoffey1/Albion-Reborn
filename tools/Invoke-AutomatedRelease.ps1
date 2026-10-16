@@ -11,7 +11,7 @@ function Sync-Repository([string]$Name){
     # ReXGlue rewrites these tracked metadata files with LF endings. Git may
     # report them modified even when its normalized diff is empty. Restore only
     # this known generated metadata, and only after confirming no text change.
-    $metadata=@('generated/rexglue.cmake',$(if($Name -eq 'Fable-II-PC'){'fable_2_manifest.toml'}else{'fable_3_manifest.toml'}))
+    $metadata=@('generated/rexglue.cmake',$(if($Name -eq 'Fable-II-PC'){'fable_2_manifest.toml'}elseif($Name -eq 'Fable-Anniversary-PC'){'fable_anniversary_manifest.toml'}else{'fable_3_manifest.toml'}))
     foreach($relative in $metadata){
         $reported=@(& git -C $path status --porcelain -- $relative)
         if($reported.Count){
@@ -27,14 +27,14 @@ function Sync-Repository([string]$Name){
 try {
     $launcher=Join-Path $root 'repos\Albion-Reborn'
     . (Join-Path $launcher 'Update.Core.ps1')
-    $f2=Sync-Repository 'Fable-II-PC';$f3=Sync-Repository 'Fable-III-PC'
-    $heads=@{launcher=(& git -C $launcher rev-parse HEAD).Trim();fable2=(& git -C $f2 rev-parse HEAD).Trim();fable3=(& git -C $f3 rev-parse HEAD).Trim()}
-    $signature=$heads.launcher+':'+$heads.fable2+':'+$heads.fable3
+    $f2=Sync-Repository 'Fable-II-PC';$f3=Sync-Repository 'Fable-III-PC';$f1=Sync-Repository 'Fable-Anniversary-PC'
+    $heads=@{launcher=(& git -C $launcher rev-parse HEAD).Trim();fable1=(& git -C $f1 rev-parse HEAD).Trim();fable2=(& git -C $f2 rev-parse HEAD).Trim();fable3=(& git -C $f3 rev-parse HEAD).Trim()}
+    $signature=$heads.launcher+':'+$heads.fable1+':'+$heads.fable2+':'+$heads.fable3
     $statePath=Join-Path $root 'published.json'
     if(!$Force -and (Test-Path $statePath) -and (Get-Content $statePath -Raw | ConvertFrom-Json).signature -eq $signature){Write-Output 'No unpublished source changes.';return}
     $specs=Get-Content (Join-Path $launcher 'packaging\runtime-specs.json') -Raw | ConvertFrom-Json
     foreach($item in $specs.runtimes){
-        $gameRoot=if($item.id -eq 'fable2'){$config.fable2Content}else{$config.fable3Content}
+        $gameRoot=if($item.id -eq 'fable1'){$config.fable1Content}elseif($item.id -eq 'fable2'){$config.fable2Content}else{$config.fable3Content}
         if((Get-FileHash (Join-Path $gameRoot 'default.xex') -Algorithm SHA256).Hash -ne $item.xexSha256){throw "Missing or unsupported local content for $($item.id)"}
         $item.version='source-'+$heads[$item.id].Substring(0,12)
         $item | Add-Member sourceCommit $heads[$item.id]
@@ -58,6 +58,9 @@ try {
     if(!(Test-Path (Join-Path $f3 'game'))){New-Item -ItemType Junction -Path (Join-Path $f3 'game') -Target $config.fable3Content | Out-Null}
     Checked $ps @('-NoProfile','-ExecutionPolicy','Bypass','-File',(Join-Path $f3 'tools\setup-sdk.ps1'))
     $sdk=Join-Path $f3 'tooling\rexglue-sdk'
+    if(!(Test-Path (Join-Path $f1 'game'))){New-Item -ItemType Junction -Path (Join-Path $f1 'game') -Target $config.fable1Content | Out-Null}
+    $sdk1=Join-Path $f1 'tooling\rexglue-sdk'
+    if(!(Test-Path $sdk1)){[IO.Directory]::CreateDirectory((Split-Path $sdk1 -Parent)) | Out-Null;New-Item -ItemType Junction -Path $sdk1 -Target $sdk | Out-Null}
     $official=Join-Path $f2 'out\tooling\rexglue-sdk-0.10.0\win-amd64'
     if(!(Test-Path $official)){[IO.Directory]::CreateDirectory((Split-Path $official -Parent)) | Out-Null;New-Item -ItemType Junction -Path $official -Target $sdk | Out-Null}
     Push-Location $f2
@@ -73,14 +76,18 @@ try {
         Checked $ps @('-NoProfile','-ExecutionPolicy','Bypass','-File','tools\build.ps1','-Jobs',([string]$config.jobs))
         if(Test-Path 'tools\test-display.ps1'){Checked $ps @('-NoProfile','-ExecutionPolicy','Bypass','-File','tools\test-display.ps1')}
     }finally{Pop-Location}
-    $runtime2=Join-Path $f2 'out\build\win-amd64-release';$runtime3=Join-Path $f3 'out\build\win-amd64-release'
-    foreach($entry in @(@{root=$runtime2;exe='fable_2.exe'},@{root=$runtime3;exe='fable_3.exe'})){
+    Push-Location $f1
+    try{
+        Checked $ps @('-NoProfile','-ExecutionPolicy','Bypass','-File','tools\build.ps1','-Jobs',([string]$config.jobs))
+    }finally{Pop-Location}
+    $runtime1=Join-Path $f1 'out\build\win-amd64-release';$runtime2=Join-Path $f2 'out\build\win-amd64-release';$runtime3=Join-Path $f3 'out\build\win-amd64-release'
+    foreach($entry in @(@{root=$runtime1;exe='fable_anniversary.exe'},@{root=$runtime2;exe='fable_2.exe'},@{root=$runtime3;exe='fable_3.exe'})){
         $imports=& (Join-Path $llvm 'llvm-readobj.exe') --coff-imports (Join-Path $entry.root $entry.exe)
         if($LASTEXITCODE -ne 0 -or !($imports -match '^\s*Name: rexruntime.dll\s*$')){throw "Invalid native runtime import: $($entry.exe)"}
         if(!(Test-Path (Join-Path $entry.root 'rexruntime.dll'))){throw 'Linked runtime DLL was not staged.'}
     }
     foreach($seed in @('fable_2.toml','fable2_config.toml')){Copy-Item -LiteralPath (Join-Path $f2 ('profiles\smooth-60\'+$seed)) -Destination (Join-Path $runtime2 $seed)}
-    $prefix=[version]'0.3.2'
+    $prefix=[version]'0.4.0'
     $latest=Get-AlbionOnlineUpdate
     if($latest){$publishedPrefix=[version]$latest.version.Split('-')[0];if($publishedPrefix -gt $prefix){$prefix=$publishedPrefix}}
     $buildId=$prefix.ToString()+'-preview-'+[datetime]::UtcNow.ToString('yyyyMMddHHmmss');$tag='v'+$buildId
@@ -89,23 +96,25 @@ try {
     $specPath=Join-Path $releaseRoot 'runtime-specs.json';$specs | ConvertTo-Json -Depth 8 | Set-Content $specPath -Encoding UTF8
     $crt=Get-ChildItem (Join-Path $vs 'VC\Redist\MSVC') -Directory | Where-Object {$_.Name -match '^14\.'} | Sort-Object Name -Descending | Select-Object -First 1
     $packages=Join-Path $releaseRoot 'packages';$distribution=Join-Path $releaseRoot 'distribution'
-    Checked $ps @('-NoProfile','-ExecutionPolicy','Bypass','-File',(Join-Path $launcher 'Build-RuntimePackages.ps1'),'-Fable2Runtime',$runtime2,'-Fable3Runtime',$runtime3,'-Fable2Project',$f2,'-Fable3Project',$f3,'-CrtDirectory',(Join-Path $crt.FullName 'x64\Microsoft.VC143.CRT'),'-SpecPath',$specPath,'-Destination',$packages)
+    Checked $ps @('-NoProfile','-ExecutionPolicy','Bypass','-File',(Join-Path $launcher 'Build-RuntimePackages.ps1'),'-AnniversaryRuntime',$runtime1,'-Fable2Runtime',$runtime2,'-Fable3Runtime',$runtime3,'-Fable2Project',$f2,'-Fable3Project',$f3,'-CrtDirectory',(Join-Path $crt.FullName 'x64\Microsoft.VC143.CRT'),'-SpecPath',$specPath,'-Destination',$packages)
     Checked $ps @('-NoProfile','-STA','-ExecutionPolicy','Bypass','-File',(Join-Path $launcher 'Build.ps1'))
     Checked $ps @('-NoProfile','-STA','-ExecutionPolicy','Bypass','-File',(Join-Path $launcher 'Test.ps1'))
     Checked $ps @('-NoProfile','-STA','-ExecutionPolicy','Bypass','-File',(Join-Path $launcher 'Test.Resolution.ps1'))
     Checked $ps @('-NoProfile','-STA','-ExecutionPolicy','Bypass','-File',(Join-Path $launcher 'Test.Fps.ps1'))
     Checked $ps @('-NoProfile','-STA','-ExecutionPolicy','Bypass','-File',(Join-Path $launcher 'Test.Anniversary.ps1'))
+    Checked $ps @('-NoProfile','-ExecutionPolicy','Bypass','-File',(Join-Path $launcher 'Test.AnniversaryPackage.ps1'),'-PackageDirectory',$packages,'-Source',$config.fable1Content)
     Checked $ps @('-NoProfile','-STA','-ExecutionPolicy','Bypass','-File',(Join-Path $launcher 'Test.Update.ps1'))
     Checked $ps @('-NoProfile','-ExecutionPolicy','Bypass','-File',(Join-Path $launcher 'Build-Bundle.ps1'),'-PackageDirectory',$packages,'-DecoderDirectory',$config.decoderDirectory,'-Destination',$distribution,'-ReleaseTag',$tag,'-BuildId',$buildId)
     $build=Get-Content (Join-Path $distribution 'latest-build.json') -Raw | ConvertFrom-Json
     Checked $ps @('-NoProfile','-STA','-ExecutionPolicy','Bypass','-File',(Join-Path $launcher 'Test.Release.ps1'),'-Distribution',$distribution)
+    Checked $ps @('-NoProfile','-ExecutionPolicy','Bypass','-File',(Join-Path $launcher 'Test.Update.ps1'),'-Bundle','-Distribution',$distribution,'-PackageDirectory',$packages,'-AnniversarySource',$config.fable1Content)
     $verify=Start-Process -FilePath $build.setup -ArgumentList '--verify' -Wait -PassThru
     if($verify.ExitCode){throw 'Installer payload verification failed.'}
     $provenance=Join-Path $distribution 'source-revisions.json';$heads | ConvertTo-Json | Set-Content $provenance -Encoding UTF8
     $manifest=Join-Path $distribution 'albion-update.json';$sums=Join-Path $distribution 'SHA256SUMS.txt'
     @($build.setup,$build.portable,$manifest,$provenance) | ForEach-Object {"$((Get-FileHash $_ -Algorithm SHA256).Hash.ToLower())  $([IO.Path]::GetFileName($_))"} | Set-Content $sums -Encoding ascii
     $notes=Join-Path $distribution 'release-notes.txt'
-    @("Automated Windows x64 preview from tested builds.","","Launcher: $($heads.launcher)","Fable II: $($heads.fable2)","Fable III: $($heads.fable3)","","Includes compiled runtimes, not game content. Supply your supported game files. Albion Reborn offers this update automatically; choose Download & restart. Managed game data, saves, caches, and seed settings remain in place. Native compilation and packaging checks do not replace full-game playtesting.") | Set-Content $notes -Encoding utf8
+    @("Windows x64 trilogy preview. Anniversary setup and automatic runtime updates are now included; supply your own supported game files.","","Anniversary uses its validated 30 FPS cap, rendering and loading-audio fixes, and existing saves.","","Launcher: $($heads.launcher)","Fable Anniversary: $($heads.fable1)","Fable II: $($heads.fable2)","Fable III: $($heads.fable3)","","Includes compiled runtimes, not game content. Supply your supported game files. Albion Reborn offers this update automatically; choose Download & restart. Managed game data, saves, caches, and seed settings remain in place. Native compilation and packaging checks do not replace full-game playtesting.") | Set-Content $notes -Encoding utf8
     if($ValidateOnly){Write-Output "Validated build (not published): $distribution";return}
     Checked 'gh' @('release','create',$tag,$build.setup,$build.portable,$manifest,$sums,$provenance,'--repo','DanielCoffey1/Albion-Reborn','--target',$heads.launcher,'--title',('Albion Reborn '+$buildId),'--notes-file',$notes,'--prerelease','--draft')
     Checked 'gh' @('release','edit',$tag,'--repo','DanielCoffey1/Albion-Reborn','--draft=false')

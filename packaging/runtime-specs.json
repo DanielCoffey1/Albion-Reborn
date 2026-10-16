@@ -2,6 +2,18 @@
   "schemaVersion": 1,
   "runtimes": [
     {
+      "id": "fable1",
+      "name": "Fable Anniversary",
+      "version": "2026.10.16.1",
+      "edition": "USA/Europe revision 0.0.0.2",
+      "xexSha256": "2BBA8C23D8C2DA28741F166030FFACFDDF3AB35A4D459E818F07CAC58DEBFA77",
+      "exe": "fable_anniversary.exe",
+      "runtimeFiles": ["fable_anniversary.exe", "rexruntime.dll", "rexgpu-xenos.dll"],
+      "seedFiles": [],
+      "requiredContent": ["WellingtonGame/CookedXbox360/AkAudio.xxx", "WellingtonGame/CookedXbox360/CharTextures.tfc"],
+      "repository": "https://github.com/DanielCoffey1/Fable-Anniversary-PC"
+    },
+    {
       "id": "fable2",
       "name": "Fable II",
       "version": "2026.10.15.1",

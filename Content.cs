@@ -56,8 +56,8 @@ public static class Content {
             string path=prefix.Length==0?name:prefix+"/"+name;
             uint fileSector=BitConverter.ToUInt32(table,p+4),fileSize=BitConverter.ToUInt32(table,p+8);
             if((table[p+12]&16)!=0) {
-                if(path.Equals("data",StringComparison.OrdinalIgnoreCase)||path.StartsWith("data/",StringComparison.OrdinalIgnoreCase)) Directory(s,volume,fileSector,fileSize,path,depth+1,info,directories);
-            } else if(path.Equals("default.xex",StringComparison.OrdinalIgnoreCase)||path.StartsWith("data/",StringComparison.OrdinalIgnoreCase)) {
+                if(path.Equals("data",StringComparison.OrdinalIgnoreCase)||path.StartsWith("data/",StringComparison.OrdinalIgnoreCase)||path.Equals("WellingtonGame",StringComparison.OrdinalIgnoreCase)||path.StartsWith("WellingtonGame/",StringComparison.OrdinalIgnoreCase)) Directory(s,volume,fileSector,fileSize,path,depth+1,info,directories);
+            } else if(path.Equals("default.xex",StringComparison.OrdinalIgnoreCase)||path.StartsWith("data/",StringComparison.OrdinalIgnoreCase)||path.StartsWith("WellingtonGame/",StringComparison.OrdinalIgnoreCase)) {
                 long offset=volume+(long)fileSector*2048;
                 if(offset<0||offset+fileSize>s.Length)throw new InvalidDataException("Disc file is out of bounds.");
                 info.Entries.Add(new ContentEntry{Path=path,Offset=offset,Length=fileSize});info.Bytes+=fileSize;

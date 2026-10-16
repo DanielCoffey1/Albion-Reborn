@@ -1,6 +1,6 @@
 param([Parameter(Mandatory)][string]$Fable2Runtime,[Parameter(Mandatory)][string]$Fable3Runtime,
       [Parameter(Mandatory)][string]$CrtDirectory,[string]$Destination='', [string]$SpecPath='',
-      [string]$Fable2Project='', [string]$Fable3Project='')
+      [string]$Fable2Project='', [string]$Fable3Project='', [string]$AnniversaryRuntime='')
 $ErrorActionPreference='Stop'
 if(!$Destination){$Destination=Join-Path $PSScriptRoot 'out\packages'}
 Add-Type -AssemblyName System.IO.Compression.FileSystem
@@ -11,7 +11,8 @@ $specs=Get-Content $SpecPath -Raw | ConvertFrom-Json
 New-Item -ItemType Directory -Path $Destination -Force | Out-Null
 $catalog=@()
 foreach ($spec in $specs.runtimes) {
-    $source=if($spec.id -eq 'fable2'){$Fable2Runtime}else{$Fable3Runtime}
+    $source=if($spec.id -eq 'fable1'){$AnniversaryRuntime}elseif($spec.id -eq 'fable2'){$Fable2Runtime}else{$Fable3Runtime}
+    if(!$source){throw "Supply a runtime directory for $($spec.id)."}
     $stage=Join-Path $PSScriptRoot ('work\runtime-packages\'+[guid]::NewGuid().ToString('N'))
     New-Item -ItemType Directory -Path $stage -Force | Out-Null
     $names=@($spec.runtimeFiles)+@($spec.seedFiles)

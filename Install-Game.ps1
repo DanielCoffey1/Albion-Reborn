@@ -1,4 +1,4 @@
-﻿param([Parameter(Mandatory)][ValidateSet('fable2','fable3')][string]$Id,
+param([Parameter(Mandatory)][ValidateSet('fable1','fable2','fable3')][string]$Id,
       [Parameter(Mandatory)][string]$Source,[Parameter(Mandatory)][string]$StatusPath,
       [string]$PackageDirectory='',
       [string]$LibraryRoot=(Join-Path $env:LOCALAPPDATA 'AlbionReborn\games'))

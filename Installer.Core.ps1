@@ -49,7 +49,7 @@ function Test-AlbionGameContent {
         if($Runtime.id -eq 'fable2' -and @($info.Entries | Where-Object Path -eq 'data/tu1_data.bnk').Count -and @($info.Entries | Where-Object {$_.Path.StartsWith('data/language/de-de/',[StringComparison]::OrdinalIgnoreCase)}).Count){throw 'Mixed retail/TU1 files are not supported.'}
     } else {
         if(Test-Path -LiteralPath $Source -PathType Leaf){$Source=Split-Path -Parent $Source}
-        if(!(Test-Path -LiteralPath (Join-Path $Source 'default.xex')) -or !(Test-Path -LiteralPath (Join-Path $Source 'data') -PathType Container)){throw 'Select the extracted folder containing default.xex and data.'}
+        if(!(Test-Path -LiteralPath (Join-Path $Source 'default.xex'))){throw 'Select the extracted folder containing default.xex and the game content.'}
         foreach($required in $Runtime.requiredContent){if(!(Test-Path -LiteralPath (Join-Path $Source $required))){throw "Incomplete game folder: $required is missing."}}
         if($Runtime.id -eq 'fable2' -and (Test-Path (Join-Path $Source 'data/tu1_data.bnk')) -and (Test-Path (Join-Path $Source 'data/language/de-de'))){throw 'Mixed retail/TU1 files are not supported.'}
         $hash=Get-AlbionFileHash (Join-Path $Source 'default.xex')
