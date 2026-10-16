@@ -115,6 +115,19 @@
         <ComboBoxItem Content="4K" Tag="4k"/>
        </ComboBox>
       </StackPanel>
+      <StackPanel Orientation="Horizontal" HorizontalAlignment="Right" Margin="0,7,0,0">
+       <TextBlock Text="FPS LIMIT" FontSize="9" Foreground="#BBAC8C" VerticalAlignment="Center" Margin="0,0,10,0"/>
+       <ComboBox x:Name="FpsChoice" Width="145" Height="29" FontSize="12" Foreground="#172329" Background="#E2C995" BorderBrush="#B99A5D" AutomationProperties.Name="Game FPS limit" ToolTip="Applies on next launch to Fable II and III. A cap, not guaranteed FPS. Above 60 FPS and Unlimited are experimental and may affect game timing. Fable I support arrives with its runtime.">
+        <ComboBoxItem Content="30 FPS" Tag="30"/>
+        <ComboBoxItem Content="60 FPS (default)" Tag="60"/>
+        <ComboBoxItem Content="90 FPS" Tag="90"/>
+        <ComboBoxItem Content="120 FPS" Tag="120"/>
+        <ComboBoxItem Content="144 FPS" Tag="144"/>
+        <ComboBoxItem Content="165 FPS" Tag="165"/>
+        <ComboBoxItem Content="240 FPS" Tag="240"/>
+        <ComboBoxItem Content="Unlimited" Tag="0"/>
+       </ComboBox>
+      </StackPanel>
      </StackPanel>
     </Grid>
     <Grid Grid.Row="1" Margin="0,1,0,17" VerticalAlignment="Center">

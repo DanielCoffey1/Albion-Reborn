@@ -109,3 +109,11 @@ The selection passes the SDK's guest video-mode/window resolution preset with dr
 The preference is reserved for Fable I, but arbitrary external Fable I executables are launched without guessed command-line flags. Resolution integration will be added with that game's runtime. The old per-game `fable3-display.json` integer-scale preference is superseded by this shared setting. Expert development tests can still use `tools/run.ps1 -RenderScale 1/2/3` explicitly.
 
 `Test.Resolution.ps1` validates defaults, persistence, safe fallback, launch plans for both supported games, preservation of Fable III's 60 FPS/rendering fixes, and the WPF selector.
+
+## Shared FPS limit
+
+The **FPS limit** selector offers 30, **60 (default)**, 90, 120, 144, 165, 240 FPS, and Unlimited. It saves alongside resolution in `display-settings.json`; changing either preference preserves the other. Existing profiles without an FPS preference use 60. Changes apply the next time you launch Fable II or III, including supported development installations. Fable I support will follow its runtime integration.
+
+The selected value is a cap, not a performance guarantee. Limits above 60 and Unlimited are experimental: game timing and compatibility at those rates have not been validated. Fable II uses its host frame limiter with guest vblank pacing disabled; Fable III uses its existing submission limiter. The tested lighting, visibility, and synchronous shader settings remain enabled.
+
+`Test.Fps.ps1` covers profile migration/fallback, independent preference persistence, all cap choices including Unlimited, supported launch paths, and preservation of rendering fixes. Automated releases run this gate before packaging.

@@ -93,6 +93,7 @@ try {
     Checked $ps @('-NoProfile','-STA','-ExecutionPolicy','Bypass','-File',(Join-Path $launcher 'Build.ps1'))
     Checked $ps @('-NoProfile','-STA','-ExecutionPolicy','Bypass','-File',(Join-Path $launcher 'Test.ps1'))
     Checked $ps @('-NoProfile','-STA','-ExecutionPolicy','Bypass','-File',(Join-Path $launcher 'Test.Resolution.ps1'))
+    Checked $ps @('-NoProfile','-STA','-ExecutionPolicy','Bypass','-File',(Join-Path $launcher 'Test.Fps.ps1'))
     Checked $ps @('-NoProfile','-STA','-ExecutionPolicy','Bypass','-File',(Join-Path $launcher 'Test.Update.ps1'))
     Checked $ps @('-NoProfile','-ExecutionPolicy','Bypass','-File',(Join-Path $launcher 'Build-Bundle.ps1'),'-PackageDirectory',$packages,'-DecoderDirectory',$config.decoderDirectory,'-Destination',$distribution,'-ReleaseTag',$tag,'-BuildId',$buildId)
     $build=Get-Content (Join-Path $distribution 'latest-build.json') -Raw | ConvertFrom-Json

@@ -15,3 +15,20 @@ $resolutionChoice.Add_SelectionChanged({
         $status.Text='Resolution could not be saved: '+$_.Exception.Message
     }
 })
+$fpsChoice=$window.FindName('FpsChoice')
+$fpsState=@{value=(Read-AlbionFrameLimit);changing=$false}
+foreach($item in $fpsChoice.Items){if([int]$item.Tag -eq $fpsState.value){$fpsChoice.SelectedItem=$item;break}}
+$fpsChoice.Add_SelectionChanged({
+    if($fpsState.changing -or !$fpsChoice.SelectedItem){return}
+    $selected=[int]$fpsChoice.SelectedItem.Tag
+    try{
+        Save-AlbionFrameLimit $selected
+        $fpsState.value=$selected
+        $label=if($selected -eq 0){'Unlimited'}else{[string]$selected+' FPS'}
+        $status.Text=$label+' saved. Applies on next launch.'
+    }catch{
+        $fpsState.changing=$true
+        try{foreach($item in $fpsChoice.Items){if([int]$item.Tag -eq $fpsState.value){$fpsChoice.SelectedItem=$item;break}}}finally{$fpsState.changing=$false}
+        $status.Text='FPS limit could not be saved: '+$_.Exception.Message
+    }
+})

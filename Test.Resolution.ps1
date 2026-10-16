@@ -18,7 +18,7 @@ foreach($resolution in @('1080p','1440p','4k')){
     Save-AlbionResolution $resolution $preferences
     Assert ((Read-AlbionResolution $preferences) -eq $resolution) 'Resolution did not persist.'
     foreach($id in $entries.Keys){
-        $plan=Get-AlbionLaunchPlan $id $entries[$id] -Resolution $resolution
+        $plan=Get-AlbionLaunchPlan $id $entries[$id] -Resolution $resolution -FrameLimit 60
         Assert ($plan.Arguments.Contains('--resolution='+$resolution) -and $plan.Arguments.Contains('--fullscreen=true')) 'Resolution did not reach a managed game.'
         Assert ($plan.Arguments.Contains('--resolution_scale=1')) 'Resolution and integer draw scaling must not stack.'
         if($id -eq 'fable3'){Assert ($plan.Arguments.Contains('--fable3_frame_limit=60') -and $plan.Arguments.Contains('--async_shader_compilation=false') -and $plan.Arguments.Contains('--fable3_mesh_occlusion_workaround=true')) 'Fable III compatibility defaults were lost.'}

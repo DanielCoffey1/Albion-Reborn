@@ -31,7 +31,7 @@ if($RealInstallations) {
         & $powershell -NoProfile -ExecutionPolicy Bypass -File $worker -Id $id -Source $sources[$id] -StatusPath $status -LibraryRoot $library
         $result=Get-Content $status -Raw | ConvertFrom-Json
         Assert ($result.state -eq 'complete') "Folder install failed: $($result.detail)"
-        $plan=Get-AlbionLaunchPlan $id $result.entry
+        $plan=Get-AlbionLaunchPlan $id $result.entry -FrameLimit 60
         Assert (Test-Path $plan.FileName) 'Managed launch executable is missing.'
         Assert ($plan.Arguments.Contains('--game_data_root="')) 'Managed launch lost its content path.'
         if($id -eq 'fable3'){
