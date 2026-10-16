@@ -1,9 +1,13 @@
 param([Parameter(Mandatory)][string]$Fable2Runtime,[Parameter(Mandatory)][string]$Fable3Runtime,
-      [Parameter(Mandatory)][string]$CrtDirectory,[string]$Destination='')
+      [Parameter(Mandatory)][string]$CrtDirectory,[string]$Destination='', [string]$SpecPath='',
+      [string]$Fable2Project='', [string]$Fable3Project='')
 $ErrorActionPreference='Stop'
 if(!$Destination){$Destination=Join-Path $PSScriptRoot 'out\packages'}
 Add-Type -AssemblyName System.IO.Compression.FileSystem
-$specs=Get-Content (Join-Path $PSScriptRoot 'packaging\runtime-specs.json') -Raw | ConvertFrom-Json
+if(!$SpecPath){$SpecPath=Join-Path $PSScriptRoot 'packaging\runtime-specs.json'}
+if(!$Fable2Project){$Fable2Project=Join-Path $PSScriptRoot '..\Fable 2\Fable-II-PC'}
+if(!$Fable3Project){$Fable3Project=Join-Path $PSScriptRoot '..\Fable 3\Fable-III-PC'}
+$specs=Get-Content $SpecPath -Raw | ConvertFrom-Json
 New-Item -ItemType Directory -Path $Destination -Force | Out-Null
 $catalog=@()
 foreach ($spec in $specs.runtimes) {
@@ -22,9 +26,9 @@ foreach ($spec in $specs.runtimes) {
     $notices=Join-Path $stage 'licenses'
     New-Item -ItemType Directory -Path $notices -Force | Out-Null
     $sources=@(
-        @{path=(Join-Path $PSScriptRoot '..\Fable 2\Fable-II-PC\LICENSE');name='Fable-II-upstream-LICENSE'},
-        @{path=(Join-Path $PSScriptRoot '..\Fable 3\Fable-III-PC\third_party\licenses\ReXGlue-LICENSE');name='ReXGlue-LICENSE'},
-        @{path=(Join-Path $PSScriptRoot '..\Fable 3\Fable-III-PC\third_party\licenses\Xenia-Canary-LICENSE');name='Xenia-Canary-LICENSE'}
+        @{path=(Join-Path $Fable2Project 'LICENSE');name='Fable-II-upstream-LICENSE'},
+        @{path=(Join-Path $Fable3Project 'third_party\licenses\ReXGlue-LICENSE');name='ReXGlue-LICENSE'},
+        @{path=(Join-Path $Fable3Project 'third_party\licenses\Xenia-Canary-LICENSE');name='Xenia-Canary-LICENSE'}
     )
     foreach($notice in $sources) {
         if(!(Test-Path -LiteralPath $notice.path)){throw "Missing license notice: $($notice.name)"}
