@@ -99,3 +99,7 @@ The Windows runner is registered only to the private Fable III repository. It bu
 Use `-ValidateOnly` to build/test without publishing, or `-Force` to republish unchanged inputs under a fresh timestamp. Automated native builds do not perform full-game gameplay tests. The existing release-only update channel remains a preview channel.
 
 Local config fields: `root` (agent directory), `fable2Content`, `fable3Content`, `decoderDirectory`, `pythonDirectory`, optional `llvmBin`, and `jobs`. Keep that JSON outside Git. Build roots contain game-derived generated code and credentials in the runner folder; never upload that directory. Stop `Runner.Listener` or disable its Startup shortcut to suspend the agent. Workflow status and failures are visible in the private Fable III repository's Actions tab.
+
+## Fable III display profile
+
+Fable III now starts in borderless desktop fullscreen with its existing 60 FPS submission cap. The base game video mode remains 1280x720; fullscreen output follows the desktop display. Native rendering scale 1 is the default for performance. An optional local `%LOCALAPPDATA%/AlbionReborn/fable3-display.json` file, `{"schemaVersion":1,"renderScale":2}`, selects 2x/1440p rendering; 3 selects 3x/4K. Higher scales are not forced on other PCs and may reduce frame rate or expose renderer issues. This does not add DLSS or replace textures. The same profile is used by the Fable III development launch script. Existing lighting/geometry fixes and synchronous shader compilation remain enabled.

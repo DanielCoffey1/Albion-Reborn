@@ -34,7 +34,10 @@ if($RealInstallations) {
         $plan=Get-AlbionLaunchPlan $id $result.entry
         Assert (Test-Path $plan.FileName) 'Managed launch executable is missing.'
         Assert ($plan.Arguments.Contains('--game_data_root="')) 'Managed launch lost its content path.'
-        if($id -eq 'fable3'){Assert ($plan.Arguments.Contains('--fable3_mesh_occlusion_workaround=true') -and $plan.Arguments.Contains('--async_shader_compilation=false')) 'Fable III rendering fixes were lost.'}
+        if($id -eq 'fable3'){
+            Assert ($plan.Arguments.Contains('--fable3_mesh_occlusion_workaround=true') -and $plan.Arguments.Contains('--async_shader_compilation=false')) 'Fable III rendering fixes were lost.'
+            Assert ($plan.Arguments.Contains('--fullscreen=true') -and $plan.Arguments.Contains('--fable3_frame_limit=60') -and $plan.Arguments -match '--resolution_scale=[123]( |$)') 'Fable III fullscreen/60 FPS/display profile was lost.'
+        }
     }
     $config=Join-Path $library 'fable2\runtime\fable2_config.toml'
     [IO.File]::AppendAllText($config,"`n# preserve-this-setting`n")

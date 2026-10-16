@@ -71,6 +71,7 @@ try {
     try{
         if(!(Test-Path (Join-Path $f3 'generated\default\sources.cmake'))){Checked (Join-Path $sdk 'bin\rexglue.exe') @('codegen','fable_3_manifest.toml')}
         Checked $ps @('-NoProfile','-ExecutionPolicy','Bypass','-File','tools\build.ps1','-Jobs',([string]$config.jobs))
+        if(Test-Path 'tools\test-display.ps1'){Checked $ps @('-NoProfile','-ExecutionPolicy','Bypass','-File','tools\test-display.ps1')}
     }finally{Pop-Location}
     $runtime2=Join-Path $f2 'out\build\win-amd64-release';$runtime3=Join-Path $f3 'out\build\win-amd64-release'
     foreach($entry in @(@{root=$runtime2;exe='fable_2.exe'},@{root=$runtime3;exe='fable_3.exe'})){

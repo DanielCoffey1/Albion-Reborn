@@ -75,7 +75,12 @@ function Get-AlbionLaunchPlan {
         if(!(Test-Path -LiteralPath $processPath) -or !(Test-Path -LiteralPath (Join-Path $receipt.gameRoot 'default.xex'))){throw 'Managed installation needs repair. Choose Set up / update.'}
         $arguments='--game_data_root="'+$receipt.gameRoot+'"'
         if($Id -eq 'fable3') {
-            $arguments+=' --no-fullscreen --window_width=1280 --window_height=720 --gpu_plugin=fable3 --direct_host_resolve=false --readback_resolve=none --fable3_static_draw_distance_multiplier=1 --fable3_mesh_occlusion_workaround=true --vsync=false --fable3_frame_limit=60 --async_shader_compilation=false'
+            $scale=1
+            try {
+                $display=Get-Content (Join-Path $env:LOCALAPPDATA 'AlbionReborn\fable3-display.json') -Raw -Encoding UTF8 | ConvertFrom-Json
+                if($display.schemaVersion -eq 1 -and [string]$display.renderScale -in @('1','2','3')){$scale=[int]$display.renderScale}
+            } catch { }
+            $arguments+=" --fullscreen=true --window_width=1280 --window_height=720 --video_mode_width=1280 --video_mode_height=720 --resolution_scale=$scale --gpu_plugin=fable3 --direct_host_resolve=false --readback_resolve=none --fable3_static_draw_distance_multiplier=1 --fable3_mesh_occlusion_workaround=true --vsync=false --fable3_frame_limit=60 --async_shader_compilation=false"
         }
         return [pscustomobject]@{Id=$Id;FileName=$processPath;Arguments=$arguments;WorkingDirectory=$runtimeDirectory;ProcessPath=$processPath;Entry=$fullPath}
     }
