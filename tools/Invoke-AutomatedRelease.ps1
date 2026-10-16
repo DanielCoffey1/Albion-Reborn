@@ -74,9 +74,9 @@ try {
     }finally{Pop-Location}
     $runtime2=Join-Path $f2 'out\build\win-amd64-release';$runtime3=Join-Path $f3 'out\build\win-amd64-release'
     foreach($entry in @(@{root=$runtime2;exe='fable_2.exe'},@{root=$runtime3;exe='fable_3.exe'})){
-        $smoke=Start-Process -FilePath (Join-Path $entry.root $entry.exe) -ArgumentList '--help' -WorkingDirectory $entry.root -WindowStyle Hidden -PassThru
-        if(!$smoke.WaitForExit(30000)){throw "Native startup smoke check timed out: $($entry.exe)"}
-        if($smoke.ExitCode -ne 0){throw "Native startup smoke check failed: $($entry.exe)"}
+        $imports=& (Join-Path $llvm 'llvm-readobj.exe') --coff-imports (Join-Path $entry.root $entry.exe)
+        if($LASTEXITCODE -ne 0 -or !($imports -match '^\s*Name: rexruntime.dll\s*$')){throw "Invalid native runtime import: $($entry.exe)"}
+        if(!(Test-Path (Join-Path $entry.root 'rexruntime.dll'))){throw 'Linked runtime DLL was not staged.'}
     }
     foreach($seed in @('fable_2.toml','fable2_config.toml')){Copy-Item -LiteralPath (Join-Path $f2 ('profiles\smooth-60\'+$seed)) -Destination (Join-Path $runtime2 $seed)}
     $prefix=[version]'0.3.2'
