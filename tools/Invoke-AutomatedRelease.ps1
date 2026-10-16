@@ -8,6 +8,17 @@ function Checked([string]$Program,[string[]]$Arguments){& $Program @Arguments | 
 function Sync-Repository([string]$Name){
     $path=Join-Path $root ('repos\'+$Name)
     if(!(Test-Path (Join-Path $path '.git'))){Checked 'gh' @('repo','clone',('DanielCoffey1/'+$Name),$path,'--','--branch','main')}
+    # ReXGlue rewrites these tracked metadata files with LF endings. Git may
+    # report them modified even when its normalized diff is empty. Restore only
+    # this known generated metadata, and only after confirming no text change.
+    $metadata=@('generated/rexglue.cmake',$(if($Name -eq 'Fable-II-PC'){'fable_2_manifest.toml'}else{'fable_3_manifest.toml'}))
+    foreach($relative in $metadata){
+        $reported=@(& git -C $path status --porcelain -- $relative)
+        if($reported.Count){
+            & git -C $path diff --quiet HEAD -- $relative
+            if($LASTEXITCODE -eq 0){Checked 'git' @('-C',$path,'restore','--worktree','--source=HEAD','--',$relative)}
+        }
+    }
     if(@(& git -C $path status --porcelain --untracked-files=no --ignore-submodules=dirty).Count){throw "Agent checkout has tracked changes: $Name. Original development checkouts were not touched."}
     Checked 'git' @('-C',$path,'fetch','origin','main')
     Checked 'git' @('-C',$path,'merge','--ff-only','origin/main')
