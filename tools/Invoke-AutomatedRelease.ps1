@@ -58,6 +58,11 @@ try {
     Push-Location $f3
     try{Checked (Join-Path $sdk 'bin\rexglue.exe') @('codegen','fable_3_manifest.toml');Checked $ps @('-NoProfile','-ExecutionPolicy','Bypass','-File','tools\build.ps1','-Jobs',([string]$config.jobs))}finally{Pop-Location}
     $runtime2=Join-Path $f2 'out\build\win-amd64-release';$runtime3=Join-Path $f3 'out\build\win-amd64-release'
+    foreach($entry in @(@{root=$runtime2;exe='fable_2.exe'},@{root=$runtime3;exe='fable_3.exe'})){
+        $smoke=Start-Process -FilePath (Join-Path $entry.root $entry.exe) -ArgumentList '--help' -WorkingDirectory $entry.root -WindowStyle Hidden -PassThru
+        if(!$smoke.WaitForExit(30000)){throw "Native startup smoke check timed out: $($entry.exe)"}
+        if($smoke.ExitCode -ne 0){throw "Native startup smoke check failed: $($entry.exe)"}
+    }
     foreach($seed in @('fable_2.toml','fable2_config.toml')){Copy-Item -LiteralPath (Join-Path $f2 ('profiles\smooth-60\'+$seed)) -Destination (Join-Path $runtime2 $seed)}
     $buildId='0.3.2-preview-'+[datetime]::UtcNow.ToString('yyyyMMddHHmmss');$tag='v'+$buildId
     $releaseRoot=Join-Path $root ('releases\'+$buildId);[IO.Directory]::CreateDirectory($releaseRoot) | Out-Null
