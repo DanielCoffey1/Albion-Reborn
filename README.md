@@ -1,6 +1,6 @@
 # Albion Reborn
 
-A Windows desktop launcher for Daniel's Fable collection: Fable II and Fable III now, with a slot for Fable I when an installation is available. This source repository contains the launcher; release downloads also include prebuilt runtimes. Each game remains in its own installation and development repository.
+A Windows desktop launcher for Daniel's Fable collection: Fable Anniversary, Fable II, and Fable III. This source repository contains the launcher; release downloads also include prebuilt runtimes. Each game remains in its own installation and development repository.
 
 ## Download and install
 
@@ -14,7 +14,7 @@ Double-click `Start.cmd`, or use the **Albion Reborn** desktop shortcut. Require
 
 The launcher discovers the existing Documents layouts for Fable II (`Fable 2/Recompiled/Fable 2 1.5.0/fable_2.exe`) and Fable III (`Fable 3/Fable-III-PC/tools/run.ps1`). Use **Locate game** or **Change location** for other locations. Fable III launches through its project script to preserve the tested lighting, mesh-visibility, shader, and pacing settings. Fable II uses its playable executable and existing configuration, with the working directory set to the installation and noisy legacy FPS logging disabled in the child environment.
 
-Fable I starts as **Not installed**. Later, choose **Locate game** and select its Windows `.exe`; no launcher rebuild is needed. This slot does not implement or promise a Fable I port.
+Fable Anniversary discovers a built `Fable Anniversary*/Fable-Anniversary-PC/tools/run.ps1` project under Documents. You can also locate that script manually. It launches borderless at the selected resolution, with full resolve readback, the loading-audio and input fixes from its runtime, and the validated 30 FPS cap. The shared FPS selector continues to apply to Fable II/III; Anniversary retains 30 until higher rates are tested. Anniversary saves remain in its existing Documents/fable_anniversary user-data folder. This first integration uses an existing local project; Anniversary ISO setup and a bundled downloadable runtime are not included yet.
 
 Selected locations are stored only on your PC in `%LOCALAPPDATA%/AlbionReborn/games.json`. Automatic discovery does not overwrite a manually chosen location. Legacy launches leave game configurations, saves, caches, and assets unchanged. Managed setup installs runtime files into its own library and preserves existing seed configuration files during updates. It detects already running configured games and prevents launching another game concurrently. Closing the launcher leaves the game running.
 

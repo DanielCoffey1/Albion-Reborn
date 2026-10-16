@@ -21,7 +21,7 @@ if ($DesktopShortcut) {
     $shortcut=$shell.CreateShortcut((Join-Path ([Environment]::GetFolderPath('Desktop')) 'Albion Reborn.lnk'))
     $shortcut.TargetPath=$executable
     $shortcut.WorkingDirectory=$PSScriptRoot
-    $shortcut.Description='Choose Fable II or Fable III, and add Fable I later.'
+    $shortcut.Description='Choose Fable Anniversary, Fable II, or Fable III.'
     $shortcut.IconLocation="$(Join-Path $PSScriptRoot 'assets\AlbionReborn.ico'),0"
     $shortcut.Save()
 }

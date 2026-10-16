@@ -155,8 +155,8 @@ foreach ($game in Get-AlbionCatalog) {
         param($sender,$eventArgs)
         $selected=[string]$sender.Tag
         $picker=[Microsoft.Win32.OpenFileDialog]::new()
-        $picker.Title=if ($selected -eq 'fable3') { 'Locate Fable III-PC\tools\run.ps1' } else { 'Locate the game executable' }
-        $picker.Filter=if ($selected -eq 'fable3') { 'Fable III launch script (run.ps1)|run.ps1' } else { 'Game executable (*.exe)|*.exe' }
+        $picker.Title=if ($selected -eq 'fable1') { 'Locate Fable-Anniversary-PC\tools\run.ps1' } elseif ($selected -eq 'fable3') { 'Locate Fable III-PC\tools\run.ps1' } else { 'Locate the game executable' }
+        $picker.Filter=if ($selected -in @('fable1','fable3')) { 'Game launch script (run.ps1)|run.ps1|Game executable (*.exe)|*.exe' } else { 'Game executable (*.exe)|*.exe' }
         if ($picker.ShowDialog($window)) {
             try {
                 $null=Get-AlbionLaunchPlan $selected $picker.FileName

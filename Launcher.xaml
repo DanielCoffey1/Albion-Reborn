@@ -109,7 +109,7 @@
       <TextBlock x:Name="CollectionCount" Text="THE TRILOGY" FontFamily="Georgia" FontSize="20" Foreground="#D5BB83" Margin="0,10,0,0" HorizontalAlignment="Right"/>
       <StackPanel Orientation="Horizontal" HorizontalAlignment="Right" Margin="0,14,0,0">
        <TextBlock Text="RESOLUTION" FontSize="9" Foreground="#BBAC8C" VerticalAlignment="Center" Margin="0,0,10,0"/>
-       <ComboBox x:Name="ResolutionChoice" Width="145" Height="29" FontSize="12" Foreground="#172329" Background="#E2C995" BorderBrush="#B99A5D" AutomationProperties.Name="Game resolution" ToolTip="Applies on next launch to Fable II and III. Some game passes may retain their original resolution. Fable I support arrives with its runtime.">
+       <ComboBox x:Name="ResolutionChoice" Width="145" Height="29" FontSize="12" Foreground="#172329" Background="#E2C995" BorderBrush="#B99A5D" AutomationProperties.Name="Game resolution" ToolTip="Applies on next launch to Anniversary, Fable II and III. Some game passes retain their original resolution.">
         <ComboBoxItem Content="1080p (default)" Tag="1080p"/>
         <ComboBoxItem Content="1440p" Tag="1440p"/>
         <ComboBoxItem Content="4K" Tag="4k"/>
@@ -117,7 +117,7 @@
       </StackPanel>
       <StackPanel Orientation="Horizontal" HorizontalAlignment="Right" Margin="0,7,0,0">
        <TextBlock Text="FPS LIMIT" FontSize="9" Foreground="#BBAC8C" VerticalAlignment="Center" Margin="0,0,10,0"/>
-       <ComboBox x:Name="FpsChoice" Width="145" Height="29" FontSize="12" Foreground="#172329" Background="#E2C995" BorderBrush="#B99A5D" AutomationProperties.Name="Game FPS limit" ToolTip="Applies on next launch to Fable II and III. A cap, not guaranteed FPS. Above 60 FPS and Unlimited are experimental and may affect game timing. Fable I support arrives with its runtime.">
+       <ComboBox x:Name="FpsChoice" Width="145" Height="29" FontSize="12" Foreground="#172329" Background="#E2C995" BorderBrush="#B99A5D" AutomationProperties.Name="Game FPS limit" ToolTip="Applies on next launch to Fable II and III. A cap, not guaranteed FPS. Above 60 FPS and Unlimited are experimental and may affect game timing. Anniversary currently retains its tested 30 FPS limit.">
         <ComboBoxItem Content="30 FPS" Tag="30"/>
         <ComboBoxItem Content="60 FPS (default)" Tag="60"/>
         <ComboBoxItem Content="90 FPS" Tag="90"/>
@@ -151,11 +151,11 @@
         </Grid>
         <StackPanel Grid.Row="2">
          <TextBlock Text="THE MAKING OF A HERO" FontSize="9" Foreground="#D1AD6D" Margin="0,0,0,9"/>
-         <TextBlock Text="Fable I" FontFamily="Georgia" FontSize="35" Foreground="#FFF0D7"/>
-         <TextBlock Text="Where legends begin." FontFamily="Georgia" FontStyle="Italic" FontSize="13" Foreground="#BEC2BE" Margin="0,9,0,22" TextWrapping="Wrap"/>
-         <Button x:Name="fable1Play" Content="Play" AutomationProperties.Name="Play Fable I"/>
-         <Button x:Name="fable1Setup" Style="{StaticResource Quiet}" Content="Setup coming later" AutomationProperties.Name="Set up fable1"/>
-         <Button x:Name="fable1Locate" Style="{StaticResource Quiet}" Content="Locate game" AutomationProperties.Name="Locate Fable I" Margin="0,2,0,0"/>
+         <TextBlock Text="Fable Anniversary" FontFamily="Georgia" FontSize="26" Foreground="#FFF0D7"/>
+         <TextBlock Text="Where legends begin. Tested at 30 FPS." FontFamily="Georgia" FontStyle="Italic" FontSize="13" Foreground="#BEC2BE" Margin="0,9,0,22" TextWrapping="Wrap"/>
+         <Button x:Name="fable1Play" Content="Play" AutomationProperties.Name="Play Fable Anniversary"/>
+         <Button x:Name="fable1Setup" Style="{StaticResource Quiet}" Visibility="Collapsed" Content="Local project" AutomationProperties.Name="Set up fable1"/>
+         <Button x:Name="fable1Locate" Style="{StaticResource Quiet}" Content="Locate game" AutomationProperties.Name="Locate Fable Anniversary" Margin="0,2,0,0"/>
         </StackPanel>
        </Grid>
        <Path Data="M 8,27 L 8,8 27,8 M 27,8 L 30,5 M 8,27 L 5,30" Stroke="#F0D598" StrokeThickness="1" IsHitTestVisible="False" HorizontalAlignment="Left" VerticalAlignment="Top"/>

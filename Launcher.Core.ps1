@@ -39,7 +39,7 @@ function Save-AlbionFrameLimit {
 
 function Get-AlbionCatalog {
     @(
-        [pscustomobject]@{ Id='fable1'; Name='Fable I'; Numeral='I'; Tagline='Every hero has a beginning.'; Description='A place reserved for the first chapter. Add your installation whenever it is ready.' }
+        [pscustomobject]@{ Id='fable1'; Name='Fable Anniversary'; Numeral='I'; Tagline='Every hero has a beginning.'; Description='Return to Oakvale with corrected item cards and smooth 30 FPS pacing. Anniversary currently uses its tested 30 FPS limit.' }
         [pscustomobject]@{ Id='fable2'; Name='Fable II'; Numeral='II'; Tagline='Your choices shape a kingdom.'; Description='Return to Albion and continue your story with your existing game settings.' }
         [pscustomobject]@{ Id='fable3'; Name='Fable III'; Numeral='III'; Tagline='The crown is only the beginning.'; Description='Lead a revolution with your current lighting and scenery fixes.' }
     )
@@ -82,14 +82,19 @@ function Save-AlbionSettings {
 function Find-AlbionInstallations {
     param([hashtable]$Settings, [string]$Documents)
     $candidates = @{
+        fable1 = ''
         fable2 = Join-Path $Documents 'Fable 2\Recompiled\Fable 2 1.5.0\fable_2.exe'
         fable3 = Join-Path $Documents 'Fable 3\Fable-III-PC\tools\run.ps1'
+    }
+    foreach($folder in Get-ChildItem -LiteralPath $Documents -Directory -Filter 'Fable Anniversary*' -ErrorAction SilentlyContinue) {
+        $candidate=Join-Path $folder.FullName 'Fable-Anniversary-PC\tools\run.ps1'
+        if(Test-Path -LiteralPath $candidate -PathType Leaf){$candidates.fable1=$candidate;break}
     }
     foreach ($id in $candidates.Keys) {
         $managed=Join-Path $env:LOCALAPPDATA ("AlbionReborn\games\$id\installation.json")
         if (!$Settings.ContainsKey($id) -and (Test-Path -LiteralPath $managed)) { $Settings[$id]=$managed }
         # A user-selected location always wins, including a disconnected drive.
-        if (!$Settings.ContainsKey($id) -and (Test-Path -LiteralPath $candidates[$id] -PathType Leaf)) {
+        if (!$Settings.ContainsKey($id) -and $candidates[$id] -and (Test-Path -LiteralPath $candidates[$id] -PathType Leaf)) {
             $Settings[$id] = $candidates[$id]
         }
     }
@@ -118,6 +123,17 @@ function Get-AlbionLaunchPlan {
         }else{$arguments+=" --vsync=false --guest_vblank_pacing=false --frame_limit=$FrameLimit"}
         return [pscustomobject]@{Id=$Id;FileName=$processPath;Arguments=$arguments;WorkingDirectory=$runtimeDirectory;ProcessPath=$processPath;Entry=$fullPath}
     }
+    if ($extension -eq '.ps1' -and $Id -eq 'fable1') {
+        if ((Split-Path -Leaf $fullPath) -ne 'run.ps1') { throw 'Choose Fable-Anniversary-PC\tools\run.ps1 to retain its tested fixes.' }
+        $project=Split-Path -Parent $directory
+        $processPath=Join-Path $project 'out\build\win-amd64-release\fable_anniversary.exe'
+        if(!(Test-Path -LiteralPath $processPath -PathType Leaf)){throw 'Build Anniversary in its own project first.'}
+        return [pscustomobject]@{
+            Id=$Id;FileName="$env:SystemRoot\System32\WindowsPowerShell\v1.0\powershell.exe"
+            Arguments=('-NoProfile -ExecutionPolicy Bypass -WindowStyle Hidden -File "'+$fullPath+'" -Resolution '+$Resolution+' -FrameLimit 30 -ReadbackResolve full')
+            WorkingDirectory=$project;ProcessPath=$processPath;Entry=$fullPath
+        }
+    }
     if ($extension -eq '.ps1' -and $Id -eq 'fable3') {
         if ((Split-Path -Leaf $fullPath) -ne 'run.ps1') { throw 'Choose Fable III-PC\tools\run.ps1 to retain its rendering fixes.' }
         $project = Split-Path -Parent $directory
@@ -129,7 +145,8 @@ function Get-AlbionLaunchPlan {
             WorkingDirectory=$project; ProcessPath=$processPath; Entry=$fullPath; DisplayResolution=$Resolution; DisplayFrameLimit=$FrameLimit
         }
     }
-    if ($extension -ne '.exe') { throw 'Choose a Windows game executable (.exe), or Fable III tools\run.ps1.' }
+    if ($extension -ne '.exe') { throw 'Choose a Windows game executable (.exe), or the Anniversary/Fable III tools\run.ps1.' }
+    if ($Id -eq 'fable1' -and (Split-Path -Leaf $fullPath) -eq 'fable_anniversary.exe') { throw 'Choose Fable-Anniversary-PC\tools\run.ps1 to preserve its tested fixes.' }
     if ($Id -eq 'fable2' -and (Split-Path -Leaf $fullPath) -ne 'fable_2.exe') {
         throw 'Choose the playable fable_2.exe so your tested configuration is used.'
     }
