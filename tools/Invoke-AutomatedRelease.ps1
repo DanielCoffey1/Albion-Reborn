@@ -62,13 +62,16 @@ try {
     if(!(Test-Path $official)){[IO.Directory]::CreateDirectory((Split-Path $official -Parent)) | Out-Null;New-Item -ItemType Junction -Path $official -Target $sdk | Out-Null}
     Push-Location $f2
     try{
-        Checked (Join-Path $sdk 'bin\rexglue.exe') @('codegen','fable_2_manifest.toml')
+        if(!(Test-Path (Join-Path $f2 'generated\default\sources.cmake'))){Checked (Join-Path $sdk 'bin\rexglue.exe') @('codegen','fable_2_manifest.toml')}
         Checked $env:ComSpec @('/d','/c','build.cmd -release fable_2')
         Checked 'python' @('-m','unittest','discover','-s','tests','-p','test_*.py')
         Checked $env:ComSpec @('/d','/c','tests\run_native_tests.cmd')
     }finally{Pop-Location}
     Push-Location $f3
-    try{Checked (Join-Path $sdk 'bin\rexglue.exe') @('codegen','fable_3_manifest.toml');Checked $ps @('-NoProfile','-ExecutionPolicy','Bypass','-File','tools\build.ps1','-Jobs',([string]$config.jobs))}finally{Pop-Location}
+    try{
+        if(!(Test-Path (Join-Path $f3 'generated\default\sources.cmake'))){Checked (Join-Path $sdk 'bin\rexglue.exe') @('codegen','fable_3_manifest.toml')}
+        Checked $ps @('-NoProfile','-ExecutionPolicy','Bypass','-File','tools\build.ps1','-Jobs',([string]$config.jobs))
+    }finally{Pop-Location}
     $runtime2=Join-Path $f2 'out\build\win-amd64-release';$runtime3=Join-Path $f3 'out\build\win-amd64-release'
     foreach($entry in @(@{root=$runtime2;exe='fable_2.exe'},@{root=$runtime3;exe='fable_3.exe'})){
         $smoke=Start-Process -FilePath (Join-Path $entry.root $entry.exe) -ArgumentList '--help' -WorkingDirectory $entry.root -WindowStyle Hidden -PassThru
