@@ -15,6 +15,7 @@ function Sync-Repository([string]$Name){
 }
 try {
     $launcher=Join-Path $root 'repos\Albion-Reborn'
+    . (Join-Path $launcher 'Update.Core.ps1')
     $f2=Sync-Repository 'Fable-II-PC';$f3=Sync-Repository 'Fable-III-PC'
     $heads=@{launcher=(& git -C $launcher rev-parse HEAD).Trim();fable2=(& git -C $f2 rev-parse HEAD).Trim();fable3=(& git -C $f3 rev-parse HEAD).Trim()}
     $signature=$heads.launcher+':'+$heads.fable2+':'+$heads.fable3
@@ -64,7 +65,11 @@ try {
         if($smoke.ExitCode -ne 0){throw "Native startup smoke check failed: $($entry.exe)"}
     }
     foreach($seed in @('fable_2.toml','fable2_config.toml')){Copy-Item -LiteralPath (Join-Path $f2 ('profiles\smooth-60\'+$seed)) -Destination (Join-Path $runtime2 $seed)}
-    $buildId='0.3.2-preview-'+[datetime]::UtcNow.ToString('yyyyMMddHHmmss');$tag='v'+$buildId
+    $prefix=[version]'0.3.2'
+    $latest=Get-AlbionOnlineUpdate
+    if($latest){$publishedPrefix=[version]$latest.version.Split('-')[0];if($publishedPrefix -gt $prefix){$prefix=$publishedPrefix}}
+    $buildId=$prefix.ToString()+'-preview-'+[datetime]::UtcNow.ToString('yyyyMMddHHmmss');$tag='v'+$buildId
+    if($latest -and (Compare-AlbionBuild $buildId $latest.version) -le 0){throw 'Build clock/version is not newer than the published release.'}
     $releaseRoot=Join-Path $root ('releases\'+$buildId);[IO.Directory]::CreateDirectory($releaseRoot) | Out-Null
     $specPath=Join-Path $releaseRoot 'runtime-specs.json';$specs | ConvertTo-Json -Depth 8 | Set-Content $specPath -Encoding UTF8
     $crt=Get-ChildItem (Join-Path $vs 'VC\Redist\MSVC') -Directory | Where-Object {$_.Name -match '^14\.'} | Sort-Object Name -Descending | Select-Object -First 1
@@ -86,6 +91,6 @@ try {
     if($ValidateOnly){Write-Output "Validated build (not published): $distribution";return}
     Checked 'gh' @('release','create',$tag,$build.setup,$build.portable,$manifest,$sums,$provenance,'--repo','DanielCoffey1/Albion-Reborn','--target',$heads.launcher,'--title',('Albion Reborn '+$buildId),'--notes-file',$notes,'--prerelease','--draft')
     Checked 'gh' @('release','edit',$tag,'--repo','DanielCoffey1/Albion-Reborn','--draft=false')
-    @{signature=$signature;tag=$tag;heads=$heads;publishedUtc=[datetime]::UtcNow.ToString('o')} | ConvertTo-Json -Depth 6 | Set-Content $statePath -Encoding UTF8
+    Write-AlbionJson @{signature=$signature;tag=$tag;heads=$heads;publishedUtc=[datetime]::UtcNow.ToString('o')} $statePath
     Write-Output "Published $tag"
 } finally {$lock.Dispose()}
