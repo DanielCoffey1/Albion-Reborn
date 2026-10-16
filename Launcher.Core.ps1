@@ -1,5 +1,23 @@
 Set-StrictMode -Version Latest
 
+function Read-AlbionResolution {
+    param([string]$Path=(Join-Path $env:LOCALAPPDATA 'AlbionReborn\display-settings.json'))
+    try{
+        $value=Get-Content -LiteralPath $Path -Raw -Encoding UTF8 | ConvertFrom-Json
+        if($value.schemaVersion -eq 1 -and $value.resolution -in @('1080p','1440p','4k')){return [string]$value.resolution}
+    }catch{}
+    return '1080p'
+}
+function Save-AlbionResolution {
+    param([ValidateSet('1080p','1440p','4k')][string]$Resolution,[string]$Path=(Join-Path $env:LOCALAPPDATA 'AlbionReborn\display-settings.json'))
+    [IO.Directory]::CreateDirectory((Split-Path $Path -Parent)) | Out-Null
+    $temporary=$Path+'.'+[guid]::NewGuid().ToString('N')+'.tmp'
+    try{
+        [IO.File]::WriteAllText($temporary,(@{schemaVersion=1;resolution=$Resolution} | ConvertTo-Json),[Text.UTF8Encoding]::new($false))
+        if(Test-Path -LiteralPath $Path){[IO.File]::Replace($temporary,$Path,($Path+'.previous'))}else{[IO.File]::Move($temporary,$Path)}
+    }finally{if([IO.File]::Exists($temporary)){[IO.File]::Delete($temporary)}}
+}
+
 function Get-AlbionCatalog {
     @(
         [pscustomobject]@{ Id='fable1'; Name='Fable I'; Numeral='I'; Tagline='Every hero has a beginning.'; Description='A place reserved for the first chapter. Add your installation whenever it is ready.' }
@@ -59,7 +77,8 @@ function Find-AlbionInstallations {
 }
 
 function Get-AlbionLaunchPlan {
-    param([Parameter(Mandatory)][string]$Id, [Parameter(Mandatory)][string]$Entry)
+    param([Parameter(Mandatory)][string]$Id, [Parameter(Mandatory)][string]$Entry,[ValidateSet('','1080p','1440p','4k')][string]$Resolution='')
+    if(!$Resolution){$Resolution=Read-AlbionResolution}
     if ($Id -notin @('fable1','fable2','fable3')) { throw 'Unknown game.' }
     if (!(Test-Path -LiteralPath $Entry -PathType Leaf)) { throw 'Game not found. Choose Locate to select its launcher.' }
     $fullPath = (Get-Item -LiteralPath $Entry).FullName
@@ -73,14 +92,9 @@ function Get-AlbionLaunchPlan {
         $runtimeDirectory=Join-Path $directory 'runtime'
         $processPath=Join-Path $runtimeDirectory $exe
         if(!(Test-Path -LiteralPath $processPath) -or !(Test-Path -LiteralPath (Join-Path $receipt.gameRoot 'default.xex'))){throw 'Managed installation needs repair. Choose Set up / update.'}
-        $arguments='--game_data_root="'+$receipt.gameRoot+'"'
+        $arguments='--game_data_root="'+$receipt.gameRoot+'" --fullscreen=true --resolution='+$Resolution+' --resolution_scale=1'
         if($Id -eq 'fable3') {
-            $scale=1
-            try {
-                $display=Get-Content (Join-Path $env:LOCALAPPDATA 'AlbionReborn\fable3-display.json') -Raw -Encoding UTF8 | ConvertFrom-Json
-                if($display.schemaVersion -eq 1 -and [string]$display.renderScale -in @('1','2','3')){$scale=[int]$display.renderScale}
-            } catch { }
-            $arguments+=" --fullscreen=true --window_width=1280 --window_height=720 --video_mode_width=1280 --video_mode_height=720 --resolution_scale=$scale --gpu_plugin=fable3 --direct_host_resolve=false --readback_resolve=none --fable3_static_draw_distance_multiplier=1 --fable3_mesh_occlusion_workaround=true --vsync=false --fable3_frame_limit=60 --async_shader_compilation=false"
+            $arguments+=' --gpu_plugin=fable3 --direct_host_resolve=false --readback_resolve=none --fable3_static_draw_distance_multiplier=1 --fable3_mesh_occlusion_workaround=true --vsync=false --fable3_frame_limit=60 --async_shader_compilation=false'
         }
         return [pscustomobject]@{Id=$Id;FileName=$processPath;Arguments=$arguments;WorkingDirectory=$runtimeDirectory;ProcessPath=$processPath;Entry=$fullPath}
     }
@@ -92,7 +106,7 @@ function Get-AlbionLaunchPlan {
         return [pscustomobject]@{
             Id=$Id; FileName="$env:SystemRoot\System32\WindowsPowerShell\v1.0\powershell.exe"
             Arguments=('-NoProfile -STA -ExecutionPolicy Bypass -WindowStyle Hidden -File "' + $fullPath + '"')
-            WorkingDirectory=$project; ProcessPath=$processPath; Entry=$fullPath
+            WorkingDirectory=$project; ProcessPath=$processPath; Entry=$fullPath; DisplayResolution=$Resolution
         }
     }
     if ($extension -ne '.exe') { throw 'Choose a Windows game executable (.exe), or Fable III tools\run.ps1.' }
@@ -101,7 +115,7 @@ function Get-AlbionLaunchPlan {
     }
     if ($Id -eq 'fable3') { throw 'Choose Fable III-PC\tools\run.ps1 to preserve the tested rendering settings.' }
     return [pscustomobject]@{
-        Id=$Id; FileName=$fullPath; Arguments=''; WorkingDirectory=$directory
+        Id=$Id; FileName=$fullPath; Arguments=$(if($Id -eq 'fable2'){'--fullscreen=true --resolution='+$Resolution+' --resolution_scale=1'}else{''}); WorkingDirectory=$directory
         ProcessPath=$fullPath; Entry=$fullPath
     }
 }
@@ -123,6 +137,7 @@ function Start-AlbionGame {
     $start.WorkingDirectory=$Plan.WorkingDirectory
     $start.UseShellExecute=$false
     $start.CreateNoWindow=$true
+    if($Plan.PSObject.Properties.Name -contains 'DisplayResolution'){$start.EnvironmentVariables['ALBION_RESOLUTION']=$Plan.DisplayResolution}
     # Leave the parent's environment alone; disable the old noisy FPS logger only in Fable II.
     if ($Plan.Id -eq 'fable2') { $start.EnvironmentVariables.Remove('FABLE2_FPS_METER') }
     return [Diagnostics.Process]::Start($start)

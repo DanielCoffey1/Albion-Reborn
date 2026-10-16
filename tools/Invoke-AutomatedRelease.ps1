@@ -92,6 +92,7 @@ try {
     Checked $ps @('-NoProfile','-ExecutionPolicy','Bypass','-File',(Join-Path $launcher 'Build-RuntimePackages.ps1'),'-Fable2Runtime',$runtime2,'-Fable3Runtime',$runtime3,'-Fable2Project',$f2,'-Fable3Project',$f3,'-CrtDirectory',(Join-Path $crt.FullName 'x64\Microsoft.VC143.CRT'),'-SpecPath',$specPath,'-Destination',$packages)
     Checked $ps @('-NoProfile','-STA','-ExecutionPolicy','Bypass','-File',(Join-Path $launcher 'Build.ps1'))
     Checked $ps @('-NoProfile','-STA','-ExecutionPolicy','Bypass','-File',(Join-Path $launcher 'Test.ps1'))
+    Checked $ps @('-NoProfile','-STA','-ExecutionPolicy','Bypass','-File',(Join-Path $launcher 'Test.Resolution.ps1'))
     Checked $ps @('-NoProfile','-STA','-ExecutionPolicy','Bypass','-File',(Join-Path $launcher 'Test.Update.ps1'))
     Checked $ps @('-NoProfile','-ExecutionPolicy','Bypass','-File',(Join-Path $launcher 'Build-Bundle.ps1'),'-PackageDirectory',$packages,'-DecoderDirectory',$config.decoderDirectory,'-Destination',$distribution,'-ReleaseTag',$tag,'-BuildId',$buildId)
     $build=Get-Content (Join-Path $distribution 'latest-build.json') -Raw | ConvertFrom-Json

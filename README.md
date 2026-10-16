@@ -100,6 +100,12 @@ Use `-ValidateOnly` to build/test without publishing, or `-Force` to republish u
 
 Local config fields: `root` (agent directory), `fable2Content`, `fable3Content`, `decoderDirectory`, `pythonDirectory`, optional `llvmBin`, and `jobs`. Keep that JSON outside Git. Build roots contain game-derived generated code and credentials in the runner folder; never upload that directory. Stop `Runner.Listener` or disable its Startup shortcut to suspend the agent. Workflow status and failures are visible in the private Fable III repository's Actions tab.
 
-## Fable III display profile
+## Shared resolution setting
 
-Fable III now starts in borderless desktop fullscreen with its existing 60 FPS submission cap. The base game video mode remains 1280x720; fullscreen output follows the desktop display. Native rendering scale 1 is the default for performance. An optional local `%LOCALAPPDATA%/AlbionReborn/fable3-display.json` file, `{"schemaVersion":1,"renderScale":2}`, selects 2x/1440p rendering; 3 selects 3x/4K. Higher scales are not forced on other PCs and may reduce frame rate or expose renderer issues. This does not add DLSS or replace textures. The same profile is used by the Fable III development launch script. Existing lighting/geometry fixes and synchronous shader compilation remain enabled.
+The library header has one **Resolution** selector: **1080p (default)**, **1440p**, and **4K**. It saves to `%LOCALAPPDATA%/AlbionReborn/display-settings.json` and applies on the next launch to managed Fable II and III, direct Fable II installations, and the current Fable III development script. Changing it while playing takes effect after restarting the game. Save files and game configuration files are not rewritten.
+
+The selection passes the SDK's guest video-mode/window resolution preset with draw scaling 1, avoiding stacking a 3x internal multiplier onto a 4K preset. Borderless output uses the desktop display; the game's own renderer determines which passes follow the requested video mode. Videos or fixed-resolution effects may retain their original resolution. Higher presets can reduce performance.
+
+The preference is reserved for Fable I, but arbitrary external Fable I executables are launched without guessed command-line flags. Resolution integration will be added with that game's runtime. The old per-game `fable3-display.json` integer-scale preference is superseded by this shared setting. Expert development tests can still use `tools/run.ps1 -RenderScale 1/2/3` explicitly.
+
+`Test.Resolution.ps1` validates defaults, persistence, safe fallback, launch plans for both supported games, preservation of Fable III's 60 FPS/rendering fixes, and the WPF selector.

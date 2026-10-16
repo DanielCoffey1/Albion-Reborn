@@ -1,4 +1,4 @@
-param([string]$PackageDirectory='', [string]$DecoderDirectory='', [string]$Destination='', [string]$ReleaseTag='v0.3.1-preview', [string]$BuildId='')
+﻿param([string]$PackageDirectory='', [string]$DecoderDirectory='', [string]$Destination='', [string]$ReleaseTag='v0.3.1-preview', [string]$BuildId='')
 $ErrorActionPreference='Stop'
 if(!$PackageDirectory){$PackageDirectory=Join-Path $PSScriptRoot 'packages'}
 if(!$DecoderDirectory){$DecoderDirectory=Join-Path $env:LOCALAPPDATA 'AlbionReborn\tools\vgmstream-r2117'}
@@ -9,7 +9,7 @@ if($BuildId){if($BuildId -notmatch '^\d+\.\d+\.\d+-preview-\d{14}$'){throw 'Inva
 $stage=Join-Path $PSScriptRoot ('work\bundles\'+$stamp)
 New-Item -ItemType Directory -Path $stage,$Destination -Force | Out-Null
 @{version=$stamp;channel='preview'} | ConvertTo-Json | Set-Content (Join-Path $stage 'build-info.json') -Encoding UTF8
-$files=@('AlbionReborn.ps1','Launcher.Core.ps1','Launcher.Audio.ps1','Launcher.Setup.ps1','Launcher.Update.ps1','Update.Core.ps1','Update-Launcher.ps1','Installer.Core.ps1','Install-Game.ps1','Prepare-Audio.ps1','Launcher.xaml','Setup.xaml','Start.cmd','README.md','LICENSE')
+$files=@('AlbionReborn.ps1','Launcher.Core.ps1','Launcher.Audio.ps1','Launcher.Setup.ps1','Launcher.Update.ps1','Launcher.Display.ps1','Update.Core.ps1','Update-Launcher.ps1','Installer.Core.ps1','Install-Game.ps1','Prepare-Audio.ps1','Launcher.xaml','Setup.xaml','Start.cmd','README.md','LICENSE')
 foreach($file in $files){Copy-Item -LiteralPath (Join-Path $PSScriptRoot $file) -Destination (Join-Path $stage $file)}
 foreach($folder in @('out','assets','packages')){New-Item -ItemType Directory -Path (Join-Path $stage $folder) -Force | Out-Null}
 foreach($file in @('AlbionReborn.exe','Albion.Content.dll')){Copy-Item -LiteralPath (Join-Path $PSScriptRoot ('out\'+$file)) -Destination (Join-Path $stage ('out\'+$file))}

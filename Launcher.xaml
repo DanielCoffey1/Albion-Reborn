@@ -107,6 +107,14 @@
      <StackPanel Grid.Column="2" VerticalAlignment="Center" HorizontalAlignment="Right">
       <TextBlock Text="Y O U R   L I B R A R Y" FontSize="9" Foreground="#9FAAAE" HorizontalAlignment="Right"/>
       <TextBlock x:Name="CollectionCount" Text="THE TRILOGY" FontFamily="Georgia" FontSize="20" Foreground="#D5BB83" Margin="0,10,0,0" HorizontalAlignment="Right"/>
+      <StackPanel Orientation="Horizontal" HorizontalAlignment="Right" Margin="0,14,0,0">
+       <TextBlock Text="RESOLUTION" FontSize="9" Foreground="#BBAC8C" VerticalAlignment="Center" Margin="0,0,10,0"/>
+       <ComboBox x:Name="ResolutionChoice" Width="145" Height="29" FontSize="12" Foreground="#172329" Background="#E2C995" BorderBrush="#B99A5D" AutomationProperties.Name="Game resolution" ToolTip="Applies on next launch to Fable II and III. Some game passes may retain their original resolution. Fable I support arrives with its runtime.">
+        <ComboBoxItem Content="1080p (default)" Tag="1080p"/>
+        <ComboBoxItem Content="1440p" Tag="1440p"/>
+        <ComboBoxItem Content="4K" Tag="4k"/>
+       </ComboBox>
+      </StackPanel>
      </StackPanel>
     </Grid>
     <Grid Grid.Row="1" Margin="0,1,0,17" VerticalAlignment="Center">

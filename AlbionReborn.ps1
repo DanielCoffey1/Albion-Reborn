@@ -181,6 +181,7 @@ $timer.Add_Tick({
 $window.Add_Closed({ $timer.Stop() })
 . (Join-Path $PSScriptRoot 'Launcher.Setup.ps1')
 . (Join-Path $PSScriptRoot 'Launcher.Update.ps1')
+. (Join-Path $PSScriptRoot 'Launcher.Display.ps1')
 Update-AlbionView
 if ($startupWarning) { $status.Text=$startupWarning }
 $timer.Start()
