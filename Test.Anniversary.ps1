@@ -2,6 +2,9 @@ $ErrorActionPreference='Stop'
 . (Join-Path $PSScriptRoot 'Launcher.Core.ps1')
 function Assert($value,$message){if(!$value){throw $message}}
 $root=Join-Path $PSScriptRoot ('work\tests\anniversary-'+[guid]::NewGuid().ToString('N'))
+$previousLocalAppData=$env:LOCALAPPDATA
+$env:LOCALAPPDATA=Join-Path $root 'user-state'
+try {
 $project=Join-Path $root 'Fable Anniversary test\Fable-Anniversary-PC'
 $script=Join-Path $project 'tools\run.ps1'
 $exe=Join-Path $project 'out\build\win-amd64-release\fable_anniversary.exe'
@@ -24,3 +27,4 @@ $rejected=$false
 try{$null=Get-AlbionLaunchPlan fable1 $exe}catch{$rejected=$true}
 Assert $rejected 'Direct Anniversary binary bypasses required fixes.'
 Write-Output 'Passed: Anniversary discovery, path quoting, resolution, validated cap, rendering settings, process identity and discovery precedence.'
+} finally { $env:LOCALAPPDATA=$previousLocalAppData }
